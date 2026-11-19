@@ -37,10 +37,10 @@ function render(){
   for(let y=0;y<=LEVEL.height;y+=TILE){ctx.moveTo(0,y);ctx.lineTo(LEVEL.width,y);}
   ctx.stroke();
   text('LV 1',2*TILE,3*TILE,36,'#365951');text('移动 → 跳跃 → 全员集合',2*TILE,4*TILE,18);
-  text('01  起点',2*TILE,13*TILE,16);text('02  走下阶梯',13*TILE,14*TILE,16);text('03  跳上平台',17*TILE,14*TILE,16);text('04  一起回家',24*TILE,12*TILE,16);
+  text('01  起点',2*TILE,13*TILE,16);text('02  跳上第一跳台',12*TILE,11*TILE,16);text('03  再向上跳',19*TILE,10*TILE,16);text('04  一起回家',27*TILE,8*TILE,16);
   for(const p of LEVEL.platforms){ctx.fillStyle='#d4e1d4';ctx.fillRect(p.x,p.y,p.width,p.height);ctx.strokeStyle='#425e57';ctx.lineWidth=2;ctx.strokeRect(p.x,p.y,p.width,p.height);ctx.fillStyle='#749b80';ctx.fillRect(p.x,p.y,p.width,4);}
-  text('落下来也没关系，从这里重新起跳 ↑',14*TILE,20.8*TILE,15);
-  const g=LEVEL.goal;ctx.fillStyle='#de79591c';ctx.fillRect(g.x,g.y,g.width,g.height);ctx.strokeStyle='#cd6853';ctx.setLineDash([6,5]);ctx.strokeRect(g.x,g.y,g.width,g.height);ctx.setLineDash([]);ctx.fillStyle='#db8363';ctx.fillRect(g.x,16*TILE-8,g.width,8);
+  text('落下后向左返回台阶，回到起点再试 ←',14*TILE,20.8*TILE,15);
+  const g=LEVEL.goal;ctx.fillStyle='#de79591c';ctx.fillRect(g.x,g.y,g.width,g.height);ctx.strokeStyle='#cd6853';ctx.setLineDash([6,5]);ctx.strokeRect(g.x,g.y,g.width,g.height);ctx.setLineDash([]);ctx.fillStyle='#db8363';ctx.fillRect(g.x,g.y+g.height-8,g.width,8);
   text(`CHECK POINT  ${state.fish.filter(f=>f.arrived).length}/3`,g.x+g.width/2,g.y-12,14,'#ad563e','center');
   for(const f of state.fish){
     ctx.fillStyle=f.color;ctx.fillRect(f.x,f.y,f.width,f.height);ctx.lineWidth=f.id===state.selected?3:1.5;ctx.strokeStyle=f.id===state.selected?'#233f47':'#6c8070';ctx.strokeRect(f.x,f.y,f.width,f.height);
