@@ -1,12 +1,6 @@
 name: Deploy whitebox to GitHub Pages
 
 on:
-  push:
-    branches:
-      - whitebox-playable-test
-    paths:
-      - game-whitebox/**
-      - .github/workflows/deploy-pages.yml
   workflow_dispatch:
 
 permissions:
