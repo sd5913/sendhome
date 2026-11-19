@@ -1,4 +1,4 @@
-import { TILE, LEVEL, SPECS, createState, step } from './engine.mjs';
+import { TILE, LEVEL, SPECS, createState, step, loadInfo } from './engine.mjs';
 const canvas=document.getElementById('game'), ctx=canvas.getContext('2d');
 let state=createState(), last=0, accumulator=0, jump=false, resetStart=null;
 const keys=new Set(), touch={left:false,right:false};
@@ -53,6 +53,9 @@ function render(){
   document.getElementById('count').textContent=`${state.fish.filter(f=>f.arrived).length} / 3`;
   document.getElementById('time').textContent=`${state.elapsed.toFixed(1)} s`;
   document.getElementById('support').textContent=state.fish[state.selected].support;
+  const carried=loadInfo(state,state.fish[state.selected]);
+  document.getElementById('load').textContent=`${carried.load}`;
+  document.getElementById('speed').textContent=`${Math.round(carried.multiplier*100)}%`;
   document.getElementById('levels').textContent=`${state.completedLevels} / 5`;
   const message=document.getElementById('message');if(message.textContent!==state.message)message.textContent=state.message;
   document.getElementById('pause').textContent=state.paused?'继续':'暂停';

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createState,step,LEVEL,TILE,PHYSICS} from './engine.mjs';
+import {createState,step,LEVEL,TILE,PHYSICS,overlaps,loadInfo} from './engine.mjs';
 const dt=1/120;
 function tick(s,n,input={}) {for(let i=0;i<n;i++)step(s,input,dt);}
 test('GDD fish dimensions, weights and relative speeds',()=>{
@@ -8,8 +8,8 @@ test('GDD fish dimensions, weights and relative speeds',()=>{
 });
 function walkTo(s,x) {
  const f=s.fish[s.selected];
- for(let i=0;i<2400 && !s.completed && Math.abs(f.x-x)>3;i++)step(s,{axis:Math.sign(x-f.x)},dt);
- assert.ok(s.completed || Math.abs(f.x-x)<=3,`walk blocked: ${f.name} at ${f.x}, target ${x}`);
+ for(let i=0;i<2400 && !s.completed && Math.abs(f.x-x)>0.01;i++)step(s,{axis:Math.max(-1,Math.min(1,(x-f.x)/(f.speed*PHYSICS.speed*dt)))},dt);
+ assert.ok(s.completed || Math.abs(f.x-x)<=0.01,`walk blocked: ${f.name} at ${f.x}, target ${x}`);
 }
 function jumpTo(s,p,delay=0) {
  const f=s.fish[s.selected];
@@ -28,7 +28,12 @@ test('all three fish traverse both raised platforms and gather with the weaker j
   jumpTo(s,second);
   walkTo(s,second.x+second.width-f.width-3);
   jumpTo(s,final);
-  walkTo(s,id===0 ? 29.75*TILE : 28.25*TILE);
+  if(id<2) walkTo(s,id===0 ? 30*TILE : 28*TILE);
+  else {
+   walkTo(s,26*TILE);
+   step(s,{jump:true},dt);
+   for(let i=0;i<160 && !s.completed;i++)step(s,{axis:f.x<28*TILE?1:0},dt);
+  }
   tick(s,120);
   assert.equal(f.arrived,true,`${f.name} missing checkpoint`);
  }
@@ -57,4 +62,60 @@ test('terrain sides and undersides are solid',()=>{
  f.x=middle.x+30;f.y=middle.y+middle.height+2;f.vy=-650;f.grounded=false;
  tick(s,2);assert.ok(f.y>=middle.y+middle.height);assert.ok(f.vy>=0);
  f.x=middle.x-f.width-1;f.y=middle.y+4;f.vy=0;tick(s,1,{axis:1});assert.ok(f.x+f.width<=middle.x);
+});
+
+function stack() {
+ const s=createState(),[a,b,c]=s.fish;
+ b.x=250;b.y=16*TILE-b.height;
+ a.x=260;a.y=b.y-a.height;a.vy=0;
+ c.x=100;c.y=16*TILE-c.height;
+ tick(s,1);return s;
+}
+function noOverlap(s) {
+ for(let i=0;i<s.fish.length;i++)for(let j=i+1;j<s.fish.length;j++)assert.equal(overlaps(s.fish[i],s.fish[j]),false,`overlap ${i},${j}`);
+}
+test('fish sides block motion without interpenetration',()=>{
+ const s=createState(),[a,b]=s.fish;s.selected=0;
+ a.x=b.x+b.width+10;tick(s,120,{axis:-1});
+ assert.ok(a.x>=b.x+b.width);noOverlap(s);
+});
+test('carrier moves rider exactly and slows according to carried weight',()=>{
+ const s=stack(),[a,b]=s.fish;s.selected=1;
+ const xA=a.x,xB=b.x;
+ tick(s,30,{axis:1});
+ assert.ok(Math.abs((a.x-xA)-(b.x-xB))<0.001);
+ assert.ok(Math.abs(b.x-xB-45)<0.001); // 270 * 2/(2+1) * 0.25s
+ assert.equal(a.support,b.name);assert.equal(loadInfo(s,b).load,1);noOverlap(s);
+});
+test('three-fish stack uses recursive load and moves together',()=>{
+ const s=createState(),[a,b,c]=s.fish;
+ c.x=200;b.x=210;b.y=c.y-b.height;a.x=220;a.y=b.y-a.height;
+ tick(s,1);s.selected=2;const before=s.fish.map(f=>f.x);
+ tick(s,30,{axis:1});
+ const displacement=180*4/7*0.25;
+ s.fish.forEach((f,i)=>assert.ok(Math.abs(f.x-before[i]-displacement)<0.001));
+ assert.equal(loadInfo(s,c).load,3);noOverlap(s);
+});
+test('rider jumping detaches and removes carrier load',()=>{
+ const s=stack(),[a,b]=s.fish;s.selected=0;step(s,{jump:true},dt);
+ assert.ok(a.y+a.height<b.y);assert.equal(loadInfo(s,b).load,0);
+ const x=a.x;s.selected=1;tick(s,10,{axis:1});assert.equal(a.x,x);noOverlap(s);
+});
+test('walking off a carrier starts falling',()=>{
+ const s=stack(),[a,b]=s.fish;s.selected=0;tick(s,36,{axis:1});
+ assert.ok(a.x>=b.x+b.width);assert.ok(a.y+a.height>b.y);assert.equal(loadInfo(s,b).load,0);noOverlap(s);
+});
+test('carrier jump lifts the rider and fish heads collide from below',()=>{
+ const s=stack(),[a,b]=s.fish;s.selected=1;
+ step(s,{jump:true},dt);assert.ok(Math.abs(a.y+a.height-b.y)<0.001);noOverlap(s);
+ const t=createState(),[top,bottom,other]=t.fish;
+ top.x=300;top.y=400;top.grounded=false;bottom.x=300;bottom.y=440;bottom.vy=-300;bottom.grounded=false;other.x=100;
+ step(t,{},dt);noOverlap(t);assert.ok(bottom.y>=top.y+top.height-0.01);
+});
+test('rider collision against a platform stops the whole carried group',()=>{
+ const s=stack(),[a,b]=s.fish;s.selected=1;
+ const p=LEVEL.platforms[5];b.x=p.x-b.width-10;b.y=p.y+p.height;
+ a.x=b.x+20;a.y=b.y-a.height;
+ tick(s,30,{axis:1});noOverlap(s);
+ for(const f of s.fish)for(const p of LEVEL.platforms)assert.equal(overlaps(f,p),false);
 });
