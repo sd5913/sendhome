@@ -1,6 +1,13 @@
-name: Deploy whitebox to GitHub Pages
+name: Deploy game to GitHub Pages
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - level-1/**
+      - game-whitebox/**
+      - .github/workflows/deploy-pages.yml
   workflow_dispatch:
 
 permissions:
@@ -25,10 +32,17 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Prepare game website
+        run: |
+          mkdir -p _site/level-1 _site/game-whitebox
+          cp index.html _site/
+          cp level-1/index.html level-1/game.mjs level-1/engine.mjs _site/level-1/
+          cp game-whitebox/index.html game-whitebox/game.js _site/game-whitebox/
+          touch _site/.nojekyll
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./game-whitebox
+          path: ./_site
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4

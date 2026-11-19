@@ -6,6 +6,8 @@
 
 ## 试玩关卡 1
 
+正式游戏入口：[在线试玩](https://sd5913.github.io/sendhome/)（GitHub Pages 部署成功后可访问）。
+
 在仓库根目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000/level-1/ 。按 GDD 与手绘蓝本搭建的基础移动教学关，支持三鱼切换、跳跃、跌落复位与全员集合判定。详见 [关卡说明](level-1/README.md)。
 
 ## 内容
@@ -40,4 +42,4 @@ python3 -m http.server 8000
 
 美术资料与白模代码已归档到同一个项目；白模仍使用几何图形，尚未接入角色图片。
 
-Pages 工作流保留为手动触发。需要公开网页时，可在新仓库 Actions 中运行 `Deploy whitebox to GitHub Pages`。
+Pages 在 `main` 上的游戏或部署配置更新后自动发布，也可在 Actions 中手动运行 `Deploy game to GitHub Pages`。站点根入口打开正式关卡 1；旧机关测试关保留在 `/game-whitebox/`。部署仅包含游戏运行文件，不上传设计文档、测试代码或原始蓝本。
