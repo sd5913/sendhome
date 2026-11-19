@@ -1,4 +1,4 @@
-import { TILE, LEVEL, SPECS, createState, step, loadInfo } from './engine.mjs';
+import { TILE, LEVEL, SPECS, createState, step, loadInfo } from './engine.mjs?v=20261119-carry-1';
 const canvas=document.getElementById('game'), ctx=canvas.getContext('2d');
 let state=createState(), last=0, accumulator=0, jump=false, resetStart=null;
 const keys=new Set(), touch={left:false,right:false};
