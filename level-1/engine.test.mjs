@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createState,step,LEVEL,TILE,PHYSICS,overlaps,loadInfo} from './engine.mjs';
+import {createState as createGameState,step,TILE,PHYSICS,overlaps,loadInfo} from '../game/engine.mjs';
+import {readFileSync} from 'node:fs';
+const LEVEL=JSON.parse(readFileSync(new URL('../levels/level-1.json',import.meta.url)));
+const createState=()=>createGameState(LEVEL);
 const dt=1/120;
 function tick(s,n,input={}) {for(let i=0;i<n;i++)step(s,input,dt);}
 test('GDD fish dimensions, weights and relative speeds',()=>{

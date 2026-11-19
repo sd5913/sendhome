@@ -1,0 +1,152 @@
+{
+  "id": "mechanics-test",
+  "title": "机关测试场",
+  "subtitle": "箱子、压力板、钥匙和撞门，使用正式游戏的同一套规则。",
+  "help": "B 或 C 推箱；压板需要重量 4，乘客重量也计入。钥匙解锁对应门。Shift 或冲刺按钮撞开撞击门。",
+  "width": 2860,
+  "height": 792,
+  "spawns": [
+    {
+      "x": 216,
+      "y": 540
+    },
+    {
+      "x": 144,
+      "y": 540
+    },
+    {
+      "x": 72,
+      "y": 504
+    }
+  ],
+  "platforms": [
+    {
+      "x": 0,
+      "y": 576,
+      "width": 2860,
+      "height": 216,
+      "label": "地面"
+    },
+    {
+      "x": 430,
+      "y": 471,
+      "width": 130,
+      "height": 18,
+      "label": "平台"
+    },
+    {
+      "x": 965,
+      "y": 486,
+      "width": 130,
+      "height": 18,
+      "label": "平台"
+    },
+    {
+      "x": 1450,
+      "y": 471,
+      "width": 150,
+      "height": 18,
+      "label": "平台"
+    },
+    {
+      "x": 2055,
+      "y": 486,
+      "width": 150,
+      "height": 18,
+      "label": "平台"
+    }
+  ],
+  "goal": {
+    "x": 2600,
+    "y": 432,
+    "width": 160,
+    "height": 144
+  },
+  "boxes": [
+    {
+      "id": "box",
+      "x": 335,
+      "y": 518,
+      "width": 58,
+      "height": 58,
+      "weight": 2,
+      "force": 1.5
+    }
+  ],
+  "plates": [
+    {
+      "id": "plate",
+      "x": 690,
+      "y": 561,
+      "width": 112,
+      "height": 15,
+      "surfaceY": 576,
+      "threshold": 4
+    }
+  ],
+  "keys": [
+    {
+      "id": "key",
+      "x": 1130,
+      "y": 522,
+      "width": 24,
+      "height": 34
+    }
+  ],
+  "doors": [
+    {
+      "id": "plate-door",
+      "type": "plate",
+      "plateId": "plate",
+      "x": 860,
+      "y": 444,
+      "width": 34,
+      "height": 132
+    },
+    {
+      "id": "key-door",
+      "type": "key",
+      "keyId": "key",
+      "x": 1330,
+      "y": 444,
+      "width": 34,
+      "height": 132
+    },
+    {
+      "id": "break-door",
+      "type": "break",
+      "breakSpeed": 500,
+      "x": 1905,
+      "y": 444,
+      "width": 34,
+      "height": 132
+    }
+  ],
+  "labels": [
+    {
+      "x": 70,
+      "y": 108,
+      "text": "机关测试场"
+    },
+    {
+      "x": 335,
+      "y": 420,
+      "text": "推箱"
+    },
+    {
+      "x": 690,
+      "y": 420,
+      "text": "压板"
+    },
+    {
+      "x": 1130,
+      "y": 420,
+      "text": "钥匙"
+    },
+    {
+      "x": 1905,
+      "y": 420,
+      "text": "冲刺撞门"
+    }
+  ]
+}

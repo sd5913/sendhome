@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - index.html
+      - game/**
+      - levels/**
+      - scripts/build_site.py
       - level-1/**
       - game-whitebox/**
       - .github/workflows/deploy-pages.yml
@@ -32,13 +35,10 @@ jobs:
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Verify shared engine
+        run: node --test game/engine.test.mjs level-1/engine.test.mjs
       - name: Prepare game website
-        run: |
-          mkdir -p _site/level-1 _site/game-whitebox
-          cp index.html _site/
-          cp level-1/index.html level-1/game.mjs level-1/engine.mjs _site/level-1/
-          cp game-whitebox/index.html game-whitebox/game.js _site/game-whitebox/
-          touch _site/.nojekyll
+        run: python3 scripts/build_site.py _site
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
         with:
