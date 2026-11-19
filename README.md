@@ -4,8 +4,13 @@
 
 **后续开发、提交与协作统一使用：https://github.com/sd5913/sendhome 。默认开发分支为 `main`。**
 
+## 试玩关卡 1
+
+在仓库根目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000/level-1/ 。按 GDD 与手绘蓝本搭建的基础移动教学关，支持三鱼切换、跳跃、跌落复位与全员集合判定。详见 [关卡说明](level-1/README.md)。
+
 ## 内容
 
+- [`level-1/`](level-1/)：关卡 1、独立物理模块及路线验证。
 - [`game-whitebox/`](game-whitebox/)：原生 HTML Canvas / JavaScript 游戏原型及操作说明。
 - [`CHARACTER_DESIGN.md`](CHARACTER_DESIGN.md)：三条鱼的角色属性与设计过程。
 - [`assets/characters/`](assets/characters/)：角色设定图及五帧动画参考。
