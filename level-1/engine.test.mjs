@@ -50,8 +50,10 @@ test('jump apex is reduced while clearing the three-tile first rise',()=>{
  assert.ok(start-apex>3*TILE);assert.ok(start-apex<3.4*TILE);
  assert.ok(PHYSICS.jump<650);
 });
-test('checkpoint occupancy is live and one fish cannot complete level',()=>{
- const s=createState(),f=s.fish[0];f.x=LEVEL.goal.x;f.y=LEVEL.goal.y+LEVEL.goal.height-f.height;
+test('any grounded overlap counts for checkpoint and leaving it clears arrival',()=>{
+ const s=createState(),f=s.fish[0];
+ // Only 1 px of the fish overlaps the right edge of the checkpoint.
+ f.x=LEVEL.goal.x+LEVEL.goal.width-1;f.y=LEVEL.goal.y+LEVEL.goal.height-f.height;
  tick(s,1);assert.equal(f.arrived,true);assert.equal(s.completed,false);
  tick(s,120,{axis:-1});assert.equal(f.arrived,false);
 });

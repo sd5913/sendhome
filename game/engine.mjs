@@ -144,7 +144,7 @@ export function step(state, input, dt) {
   }
   mechanisms(state);
   for(const fish of state.fish) {
-    fish.arrived=fish.x>=LEVEL.goal.x && fish.x+fish.width<=LEVEL.goal.x+LEVEL.goal.width && fish.y>=LEVEL.goal.y && fish.y+fish.height<=LEVEL.goal.y+LEVEL.goal.height+0.1 && fish.grounded;
+    fish.arrived=overlaps(fish,LEVEL.goal) && fish.grounded;
   }
   if(state.fish.every(f=>f.arrived)) {
     state.completed=true; state.completedLevels=1;
