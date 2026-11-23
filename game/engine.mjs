@@ -5,6 +5,9 @@ export const SPECS = [
   { name: '鱼 C', width: 2*TILE, height: 2*TILE, weight: 4, speed: 1, color: '#92b86b' }
 ];
 export const PHYSICS = { gravity: 1500, jump: 600, speed: 180 };
+// Topmost painted fish under a world-space point; -1 when none is hit.
+// Fish are drawn in array order, so the last matching one is what the player sees.
+export function fishAt(fish,x,y){for(let i=fish.length-1;i>=0;i--){const f=fish[i];if(x>=f.x&&x<=f.x+f.width&&y>=f.y&&y<=f.y+f.height)return i;}return -1;}
 export const overlaps = (a,b) => a.x < b.x+b.width-1e-7 && a.x+a.width > b.x+1e-7 && a.y < b.y+b.height-1e-7 && a.y+a.height > b.y+1e-7;
 const across = (a,b) => a.x < b.x+b.width && a.x+a.width > b.x;
 export function validateLevel(level) {

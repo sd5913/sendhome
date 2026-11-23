@@ -4,7 +4,7 @@ import {readFileSync,readdirSync,mkdtempSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {createState,step,loadInfo,overlaps,validateLevel,PHYSICS} from './engine.mjs';
+import {createState,step,loadInfo,overlaps,validateLevel,PHYSICS,fishAt} from './engine.mjs';
 const read=name=>JSON.parse(readFileSync(new URL('../levels/'+name+'.json',import.meta.url)));
 const tick=(s,n,input={})=>{for(let i=0;i<n;i++)step(s,input,1/120);};
 const fresh=()=>createState(read('mechanics-test'));
@@ -51,6 +51,15 @@ test('respawn uses arbitrary level data rather than LV1 coordinates',()=>{
 });
 test('invalid door links are rejected at level load',()=>{
  const l=read('mechanics-test');l.doors[0].plateId='missing';assert.throws(()=>createState(l),/Missing plate/);
+});
+test('clicking a fish returns its index and empty space returns none',()=>{
+ const s=createState(read('mechanics-test'));
+ s.fish[0].x=100;s.fish[0].y=200;
+ s.fish[1].x=300;s.fish[1].y=200;
+ assert.equal(fishAt(s.fish,110,210),0);
+ assert.equal(fishAt(s.fish,300,200),1);
+ assert.equal(fishAt(s.fish,299,200),-1);
+ assert.equal(fishAt(s.fish,0,0),-1);
 });
 test('deployment packages exactly one engine and app for every level',()=>{
  const dir=mkdtempSync(join(tmpdir(),'sendhome-shared-'));

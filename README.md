@@ -48,7 +48,7 @@ python3 -m http.server 8000
 
 浏览器打开 http://localhost:8000/game-whitebox/ 。所有场景均需通过本地 HTTP 服务器或在线 Pages 运行（ES 模块和关卡 JSON 不能通过 file:// 读取）。
 
-移动：A/D 或方向键；跳跃：W/空格/↑；冲刺：Shift；切换角色：1/2/3 或 Tab；暂停：Esc；重置：长按 R。
+移动：A/D 或方向键；跳跃：W/空格/↑；冲刺：Shift；切换角色：1/2/3、Tab 或点击画面中的小鱼；暂停：Esc；重置：长按 R。
 
 ## 整合来源
 

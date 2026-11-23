@@ -1,4 +1,4 @@
-import { TILE, SPECS, createState, step, loadInfo } from './engine.mjs?v=shared-1';
+import { TILE, SPECS, createState, step, loadInfo, fishAt } from './engine.mjs?v=shared-1';
 async function start() {
   const catalogResponse=await fetch('../levels/index.json',{cache:'no-cache'});
   if(!catalogResponse.ok)throw Error('无法读取关卡目录');
@@ -19,6 +19,7 @@ async function start() {
 const canvas=document.getElementById('game'), ctx=canvas.getContext('2d');
 canvas.width=Math.min(1152,LEVEL.width);canvas.height=Math.min(792,LEVEL.height);
 let state=createState(LEVEL), last=0, accumulator=0, jump=false, resetStart=null;
+let cameraX=0, cameraY=0;
 const keys=new Set(), touch={left:false,right:false,dash:false};
 const list=document.getElementById('fish-list');
 list.innerHTML=SPECS.map((s,i)=>`<button class="fish" data-fish="${i}" aria-pressed="${i===0}"><span class="swatch" style="background:${s.color}"></span><span>${i+1} · ${s.name}<br><span class="meta">${s.width/TILE}×${s.height/TILE} 格 · 重 ${s.weight} · 速 ${s.speed}</span></span></button>`).join('');
@@ -47,12 +48,23 @@ for(const b of document.querySelectorAll('[data-hold]')){
   for(const name of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(name,()=>touch[b.dataset.hold]=false);
 }
 document.getElementById('jump').onpointerdown=e=>{e.preventDefault();if(!state.paused)jump=true;};
+// Click a fish on the canvas to take control of it (1/2/3 and Tab still work).
+canvas.addEventListener('pointerdown',e=>{
+  if(e.button!==undefined && e.button!==0)return;
+  const rect=canvas.getBoundingClientRect();
+  if(!rect.width||!rect.height)return;
+  const x=(e.clientX-rect.left)*canvas.width/rect.width+cameraX;
+  const y=(e.clientY-rect.top)*canvas.height/rect.height+cameraY;
+  const id=fishAt(state.fish,x,y);
+  if(id<0)return;
+  e.preventDefault();select(id);canvas.focus({preventScroll:true});
+});
 function text(s,x,y,size=16,color='#536b70',align='left'){ctx.fillStyle=color;ctx.font=`${size}px system-ui`;ctx.textAlign=align;ctx.fillText(s,x,y);}
 function render(){
   ctx.fillStyle='#fcfcf7';ctx.fillRect(0,0,canvas.width,canvas.height);
   const active=state.fish[state.selected];
-  const cameraX=Math.max(0,Math.min(LEVEL.width-canvas.width,active.x+active.width/2-canvas.width*0.42));
-  const cameraY=Math.max(0,Math.min(LEVEL.height-canvas.height,active.y+active.height/2-canvas.height*0.5));
+  cameraX=Math.max(0,Math.min(LEVEL.width-canvas.width,active.x+active.width/2-canvas.width*0.42));
+  cameraY=Math.max(0,Math.min(LEVEL.height-canvas.height,active.y+active.height/2-canvas.height*0.5));
   ctx.save();ctx.translate(-cameraX,-cameraY);
   ctx.strokeStyle='#e1e6de';ctx.lineWidth=1;ctx.beginPath();
   for(let x=0;x<=LEVEL.width;x+=TILE){ctx.moveTo(x,0);ctx.lineTo(x,LEVEL.height);}
