@@ -16,7 +16,7 @@
 
 | 位置 | 职责 |
 | --- | --- |
-| `game/engine.mjs` | 唯一物理与玩法引擎：角色、碰撞、承载、负重、箱子、压板、钥匙、门、通关 |
+| `game/engine.mjs` | 唯一物理与玩法引擎：角色、碰撞、推鱼、承载、负重、箱子、压板、钥匙、门、通关 |
 | `game/app.mjs`、`game/index.html`、`game/style.css` | 共享输入、绘制、镜头、暂停、重置和界面 |
 | `levels/level-1.json` | 正式第一关地编 |
 | `levels/mechanics-test.json` | 机关测试场地编 |

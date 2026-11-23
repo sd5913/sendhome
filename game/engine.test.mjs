@@ -61,6 +61,49 @@ test('clicking a fish returns its index and empty space returns none',()=>{
  assert.equal(fishAt(s.fish,299,200),-1);
  assert.equal(fishAt(s.fish,0,0),-1);
 });
+test('a heavier fish shoves a lighter one without overlapping it',()=>{
+ const s=fresh(),[a,b]=s.fish,floor=s.level.platforms[0];
+ s.boxes[0].x=2500;
+ b.x=300;b.y=floor.y-b.height;
+ a.x=300+b.width;a.y=floor.y-a.height;
+ s.selected=1;
+ const b0=b.x,a0=a.x;tick(s,30,{axis:1});
+ // B pushes slower than its free 270 px/s: 270 * 2/(2+1) * 0.25s = 45 px.
+ assert.ok(Math.abs(b.x-b0-45)<0.001,`B moved ${b.x-b0}`);
+ assert.ok(Math.abs(a.x-a0-45)<0.001,`A moved ${a.x-a0}`);
+ assert.equal(overlaps(a,b),false);
+});
+test('a fish cannot shove one at least as heavy as itself',()=>{
+ const s=fresh(),[a,,c]=s.fish,floor=s.level.platforms[0];
+ s.boxes[0].x=2500;
+ a.x=300;a.y=floor.y-a.height;
+ c.x=300+a.width;c.y=floor.y-c.height;
+ s.selected=0;
+ const c0=c.x;tick(s,60,{axis:1});
+ assert.equal(c.x,c0);assert.ok(a.x+a.width<=c.x+0.001);
+});
+test('carried weight cuts shove speed and shove ability',()=>{
+ const floor=fresh().level.platforms[0];
+ // C alone shoves B: 180 * 2/3 * 0.25s = 30 px.
+ const s=fresh(),[a,b,c]=s.fish;
+ s.boxes[0].x=2500;
+ c.x=300;c.y=floor.y-c.height;b.x=300+c.width;b.y=floor.y-b.height;a.x=100;a.y=floor.y-a.height;
+ s.selected=2;const b0=b.x;tick(s,30,{axis:1});
+ assert.ok(Math.abs(b.x-b0-30)<0.001,`C+0 moved ${b.x-b0}`);
+ // C carrying A is slower and shoves less far.
+ const t=fresh(),[ta,tb,tc]=t.fish;
+ t.boxes[0].x=2500;
+ tc.x=300;tc.y=floor.y-tc.height;ta.x=310;ta.y=tc.y-ta.height;tb.x=300+tc.width;tb.y=floor.y-tb.height;
+ t.selected=2;tick(t,1);const tb0=tb.x;tick(t,30,{axis:1});
+ assert.ok(tb.x-tb0>0 && tb.x-tb0<30,`loaded C moved ${tb.x-tb0}`);
+ assert.equal(overlaps(ta,tb),false);
+ // B carrying A cannot shove C.
+ const u=fresh(),[ua,ub,uc]=u.fish;
+ u.boxes[0].x=2500;
+ ub.x=300;ub.y=floor.y-ub.height;ua.x=310;ua.y=ub.y-ua.height;uc.x=300+ub.width;uc.y=floor.y-uc.height;
+ u.selected=1;tick(u,1);const uc0=uc.x;tick(u,60,{axis:1});
+ assert.equal(uc.x,uc0);assert.equal(overlaps(ua,uc),false);
+});
 test('deployment packages exactly one engine and app for every level',()=>{
  const dir=mkdtempSync(join(tmpdir(),'sendhome-shared-'));
  const output=join(dir,'site');const result=spawnSync('python3',['scripts/build_site.py',output],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);

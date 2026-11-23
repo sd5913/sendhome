@@ -108,6 +108,21 @@ export function step(state, input, dt) {
     const group=[box,...new Set(riders.flatMap(f=>passengers(f,parents)))];
     sweep(group,[...solids(state),...state.boxes.filter(b=>b!==box),...state.fish.filter(f=>!group.includes(f)&&!moving.includes(f))],'x',desiredX,LEVEL);
   }
+  // A heavier, unburdened fish can shove a lighter one. Shove power is squared
+  // by the pusher's weight and divided by what it carries, so a loaded carrier
+  // pushes slower and eventually cannot push at all.
+  const shovePower=active.weight*active.weight/(active.weight+load);
+  const ahead=state.fish.filter(f=>!moving.includes(f) && f.grounded && moving.some(m=>overlaps({...m,x:m.x+desiredX},f)));
+  ahead.sort((a,b)=>desiredX>0 ? a.x-b.x : (b.x+b.width)-(a.x+a.width));
+  const target=ahead[0];
+  if(active.grounded && target) {
+    const targetGroup=passengers(target,parents);
+    const resistance=targetGroup.reduce((sum,f)=>sum+f.weight,0);
+    if(shovePower>resistance) {
+      const factor=shovePower/(shovePower+resistance);
+      sweep(targetGroup,[...solids(state),...state.boxes,...state.fish.filter(f=>!targetGroup.includes(f)&&!moving.includes(f))],'x',desiredX*factor,LEVEL);
+    }
+  }
   const dx=sweep(moving,[...solids(state),...state.boxes,...state.fish.filter(f=>!moving.includes(f))],'x',desiredX,LEVEL);
   for(const f of moving) f.vx=dx/dt;
   if(jumping) {active.vy=-PHYSICS.jump;active.grounded=false;}
