@@ -104,6 +104,25 @@ test('carried weight cuts shove speed and shove ability',()=>{
  u.selected=1;tick(u,1);const uc0=uc.x;tick(u,60,{axis:1});
  assert.equal(uc.x,uc0);assert.equal(overlaps(ua,uc),false);
 });
+test('jump height drops sharply when carrying a heavier rider',()=>{
+ const floor=fresh().level.platforms[0];
+ const apexOf=setup=>{
+  const s=fresh();s.boxes[0].x=2500;setup(s);tick(s,1);
+  const f=s.fish[s.selected],start=f.y;
+  step(s,{jump:true},1/120);let apex=f.y;
+  for(let i=0;i<200;i++){step(s,{},1/120);apex=Math.min(apex,f.y);}
+  return start-apex;
+ };
+ // Unloaded B: 600^2 / (2*1500) = 120 px.
+ const free=apexOf(s=>{s.selected=1;const b=s.fish[1];b.x=300;b.y=floor.y-b.height;});
+ assert.ok(free>115 && free<125,`free apex ${free}`);
+ // B carrying A: 400^2 / 3000 = 53.3 px.
+ const loaded=apexOf(s=>{s.selected=1;const [a,b]=s.fish;b.x=300;b.y=floor.y-b.height;a.x=310;a.y=b.y-a.height;});
+ assert.ok(loaded>50 && loaded<57,`B+A apex ${loaded}`);
+ // A carrying C (four times heavier): 120^2 / 3000 = 4.8 px, almost no lift.
+ const crushed=apexOf(s=>{s.selected=0;const [a,,c]=s.fish;a.x=300;a.y=floor.y-a.height;c.x=a.x;c.y=a.y-c.height;});
+ assert.ok(crushed>0 && crushed<10,`A+C apex ${crushed}`);
+});
 test('deployment packages exactly one engine and app for every level',()=>{
  const dir=mkdtempSync(join(tmpdir(),'sendhome-shared-'));
  const output=join(dir,'site');const result=spawnSync('python3',['scripts/build_site.py',output],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);

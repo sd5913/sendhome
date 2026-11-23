@@ -125,7 +125,9 @@ export function step(state, input, dt) {
   }
   const dx=sweep(moving,[...solids(state),...state.boxes,...state.fish.filter(f=>!moving.includes(f))],'x',desiredX,LEVEL);
   for(const f of moving) f.vx=dx/dt;
-  if(jumping) {active.vy=-PHYSICS.jump;active.grounded=false;}
+  // Jump carries the same momentum: v = jump * ownWeight / totalWeight, so a
+  // rider heavier than the carrier leaves almost no lift at all.
+  if(jumping) {active.vy=-PHYSICS.jump*active.weight/(active.weight+load);active.grounded=false;}
   parents=contacts(state.fish,jumping?active:null);
   const roots=state.fish.filter(f=>!parents.has(f)).sort((a,b)=>b.y+b.height-a.y-a.height);
   for(const root of roots) {
