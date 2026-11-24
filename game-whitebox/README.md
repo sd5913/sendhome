@@ -4,7 +4,7 @@
 
 在仓库根目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000/game/?level=mechanics-test 。
 
-地编：`levels/mechanics-test.json`；物理与机关：`game/engine.mjs`；输入、界面、渲染、镜头：`game/app.mjs`。与正式关卡共用所有角色规则，包括实体碰撞、鱼背跟随和负重减速。
+地编：`levels/mechanics-test.json`；物理与机关：`game/engine.mjs`；输入、界面、渲染、镜头：`game/app.mjs`。与正式关卡共用所有角色规则，包括实体碰撞、鱼背跟随和负重减速。角色、视差背景与终点门使用 `game/art/` 里从设定稿提取的素材；本关的箱子、压板、钥匙和门仍为几何绘制。
 
 - A/D 或方向键移动，W/空格/↑ 跳跃，1/2/3、Tab 或点击画面中的小鱼切换，Shift 冲刺，Esc 暂停，长按 R 重置。
 - A 无法推箱，B 和 C 可推；箱子受地形、鱼和关闭的门阻挡。
