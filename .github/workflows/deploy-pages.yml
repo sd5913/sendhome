@@ -43,6 +43,11 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./_site
+      # deploy-pages resolves the artifact through the Actions API right after
+      # upload. That lookup can return zero artifacts for a few seconds, which
+      # fails the job with "No artifacts named github-pages were found".
+      - name: Let the uploaded artifact settle
+        run: sleep 15
       - name: Deploy website
         id: deployment
         uses: actions/deploy-pages@v4
