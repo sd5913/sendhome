@@ -27,6 +27,9 @@ async function start() {
 const canvas=document.getElementById('game'), ctx=canvas.getContext('2d');
 canvas.width=Math.min(1152,LEVEL.width);canvas.height=Math.min(792,LEVEL.height);
 let state=createState(LEVEL), last=0, accumulator=0, jump=false, resetStart=null;
+// ?select=2 opens the level with fish C already active; handy for reviews.
+const startWith=Number(new URLSearchParams(location.search).get('select'));
+if(Number.isInteger(startWith)&&startWith>=0&&startWith<3)state.selected=startWith;
 let cameraX=0, cameraY=0;
 const keys=new Set(), touch={left:false,right:false,dash:false};
 const list=document.getElementById('fish-list');
@@ -63,7 +66,13 @@ canvas.addEventListener('pointerdown',e=>{
   if(!rect.width||!rect.height)return;
   const x=(e.clientX-rect.left)*canvas.width/rect.width+cameraX;
   const y=(e.clientY-rect.top)*canvas.height/rect.height+cameraY;
-  const id=fishAt(state.fish,x,y);
+  // Prefer the visible sprite bounds (heads and tails stick out of the collision box).
+  let id=-1;
+  for(let i=state.fish.length-1;i>=0;i--){
+    const d=state.fish[i].drawn;
+    if(d && x>=d.left && x<=d.left+d.width && y>=d.top && y<=d.top+d.height){id=i;break;}
+  }
+  if(id<0)id=fishAt(state.fish,x,y);
   if(id<0)return;
   e.preventDefault();select(id);canvas.focus({preventScroll:true});
 });
@@ -107,7 +116,7 @@ function render(){
     const strip=art.fish[`${'ABC'[f.id]}/${action}`];
     const cx=f.x+f.width/2;
     ctx.save();ctx.globalAlpha=0.16;ctx.fillStyle='#123a4a';ctx.beginPath();ctx.ellipse(cx,f.y+f.height-2,f.width*0.46,5,0,0,Math.PI*2);ctx.fill();ctx.restore();
-    let spriteTop=f.y;
+    let spriteTop=f.y,drawn={left:f.x,top:f.y,width:f.width,height:f.height};
     if(strip){
       const fw=strip.width/5,fh=strip.height;
       const frame=action==='jump'?(f.vy<-250?0:f.vy<0?1:f.vy<250?2:3):Math.floor(state.elapsed*(action==='run'?12:5)+f.id*1.7)%5;
@@ -115,14 +124,16 @@ function render(){
       if(f.id===1){dw=f.width*1.02;dh=dw*fh/fw;} // B's art is wide and squat
       else if(dw>f.width*1.3){dw=f.width*1.3;dh=dw*fh/fw;}
       spriteTop=f.y+f.height-dh;
+      drawn={left:cx-dw/2,top:spriteTop,width:dw,height:dh};
       ctx.save();ctx.translate(cx,0);if(f.facing<0)ctx.scale(-1,1);
       ctx.drawImage(strip,frame*fw,0,fw,fh,-dw/2,spriteTop,dw,dh);
       ctx.restore();
     }else{
       ctx.fillStyle=f.color;ctx.fillRect(f.x,f.y,f.width,f.height);ctx.strokeStyle='#6c8070';ctx.lineWidth=1.5;ctx.strokeRect(f.x,f.y,f.width,f.height);
     }
-    if(f.id===state.selected){ctx.strokeStyle='#ffd75e';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(f.x-4,spriteTop-4,f.width+8,f.height+8,7);ctx.stroke();text('▼',cx,spriteTop-10,14,'#8a6100','center');}
-    text(f.name+(f.arrived?' ✓':''),cx,spriteTop-26,13,'#123a4a','center');
+    f.drawn=drawn;
+    if(f.id===state.selected){ctx.strokeStyle='#ffd75e';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(drawn.left-4,drawn.top-4,drawn.width+8,drawn.height+8,7);ctx.stroke();text('▼',cx,drawn.top-10,14,'#8a6100','center');}
+    text(f.name+(f.arrived?' ✓':''),cx,drawn.top-26,13,'#123a4a','center');
   }
   ctx.restore();
   if(state.paused||state.completed){ctx.fillStyle='#183c43cc';ctx.fillRect(0,0,canvas.width,canvas.height);text(state.completed?'全员集合，关卡完成':'已暂停',canvas.width/2,canvas.height/2-15,36,'white','center');text(state.completed?`三位伙伴已集合 · 用时 ${state.elapsed.toFixed(1)} 秒`:'按 Esc 或点击继续',canvas.width/2,canvas.height/2+32,20,'white','center');}
