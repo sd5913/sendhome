@@ -11,6 +11,9 @@ target = Path(sys.argv[1] if len(sys.argv) > 1 else root / '_site')
 target.mkdir(parents=True, exist_ok=False)
 (target / 'game').mkdir()
 (target / 'levels').mkdir()
+# Character strips, parallax bands and the goal door extracted from the design
+# sheets. Regenerate with scripts/build_art.py.
+shutil.copytree(root / 'game' / 'art', target / 'game' / 'art')
 
 def asset(name, content):
     path = Path(name)

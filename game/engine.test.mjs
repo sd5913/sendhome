@@ -130,4 +130,8 @@ test('deployment packages exactly one engine and app for every level',()=>{
  assert.deepEqual(readdirSync(join(output,'level-1')),['index.html']);assert.deepEqual(readdirSync(join(output,'game-whitebox')),['index.html']);
  const html=readFileSync(join(output,'game/index.html'),'utf8');assert.match(html,/app\.[0-9a-f]+\.mjs/);
  const app=readFileSync(join(output,'game',files.find(f=>f.startsWith('app.'))),'utf8');assert.match(app,/engine\.[0-9a-f]+\.mjs/);
+ const art=readdirSync(join(output,'game','art'));
+ assert.equal(art.filter(f=>/^fish_[ABC]_(idle|run|jump)\.png$/.test(f)).length,9);
+ assert.deepEqual(art.filter(f=>/^bg_/.test(f)).sort(),['bg_far.png','bg_mid.png','bg_near.png']);
+ assert.match(app,/art\/fish_/);
 });
