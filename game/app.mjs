@@ -10,13 +10,13 @@ async function start() {
   const LEVEL=await response.json();
   createState(LEVEL); // Validate before mounting the shared UI.
   // Art is optional: if a sprite cannot load the game keeps the whitebox look.
-  const art={fish:{},bg:{},door:null};
+  const art={fish:{},background:null,door:null};
   const loadImage=src=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>reject(Error('无法读取美术资源 '+src));img.src=src;});
   try{
-    const [far,mid,near,door]=await Promise.all(['far','mid','near','door_open'].map(name=>loadImage(`art/${name==='door_open'?'door_open':'bg_'+name}.png`)));
-    art.bg={far,mid,near};art.door=door;
+    art.door=await loadImage('art/door_open.png');
     for(const id of ['A','B','C'])for(const action of ['idle','run','jump'])art.fish[`${id}/${action}`]=await loadImage(`art/fish_${id}_${action}.png`);
   }catch(error){console.warn(error.message,'— 使用白模绘制');}
+  try{art.background=await loadImage('art/background-underwater-24f80eec63d1.png');}catch(error){console.warn(error.message);}
   document.title='送小鱼回家 · '+LEVEL.title;
   document.getElementById('title').textContent=LEVEL.title;
   document.getElementById('subtitle').textContent=LEVEL.subtitle;
@@ -77,11 +77,6 @@ canvas.addEventListener('pointerdown',e=>{
   e.preventDefault();select(id);canvas.focus({preventScroll:true});
 });
 function text(s,x,y,size=16,color='#536b70',align='left'){ctx.fillStyle=color;ctx.font=`${size}px system-ui`;ctx.textAlign=align;ctx.fillText(s,x,y);}
-  function drawBand(img,parallax,y,height){
-    if(!img)return;
-    const width=height*img.width/img.height;
-    for(let x=-((cameraX*parallax)%width);x<canvas.width;x+=width)ctx.drawImage(img,x,y,width,height);
-  }
 function render(){
   const active=state.fish[state.selected];
   cameraX=Math.max(0,Math.min(LEVEL.width-canvas.width,active.x+active.width/2-canvas.width*0.42));
@@ -89,9 +84,13 @@ function render(){
   const sky=ctx.createLinearGradient(0,0,0,canvas.height);
   sky.addColorStop(0,'#d9f4fb');sky.addColorStop(0.55,'#a3def1');sky.addColorStop(1,'#74c3e2');
   ctx.fillStyle=sky;ctx.fillRect(0,0,canvas.width,canvas.height);
-  drawBand(art.bg.far,0.15,canvas.height*0.03,canvas.height*0.17);
-  drawBand(art.bg.mid,0.35,canvas.height*0.21,canvas.height*0.19);
-  drawBand(art.bg.near,0.6,canvas.height*0.79,canvas.height*0.21);
+  // Shared cover background: preserve aspect ratio, center-crop without stretching.
+  // Background artwork is decorative; collision geometry still comes from level data.
+  if(art.background){
+    const img=art.background,scale=Math.max(canvas.width/img.width,canvas.height/img.height);
+    const width=img.width*scale,height=img.height*scale;
+    ctx.drawImage(img,(canvas.width-width)/2,(canvas.height-height)/2,width,height);
+  }
   ctx.save();ctx.translate(-cameraX,-cameraY);
   for(const label of LEVEL.labels||[])text(label.text,label.x,label.y,16,'#2d5a6b');
   for(const p of LEVEL.platforms){
