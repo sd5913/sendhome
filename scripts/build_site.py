@@ -21,8 +21,10 @@ def asset(name, content):
     (target / 'game' / filename).write_text(content)
     return filename
 
+audio = asset('audio.mjs', (root / 'game/audio.mjs').read_text())
 engine = asset('engine.mjs', (root / 'game/engine.mjs').read_text())
 app_text = (root / 'game/app.mjs').read_text().replace('./engine.mjs?v=shared-1', './' + engine)
+app_text = app_text.replace('./audio.mjs?v=shared-1', './' + audio)
 app = asset('app.mjs', app_text)
 style = asset('style.css', (root / 'game/style.css').read_text())
 html = (root / 'game/index.html').read_text().replace('app.mjs?v=shared-1', app).replace('style.css?v=shared-1', style)

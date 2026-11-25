@@ -6,6 +6,9 @@
 
 ## 开发与修改报告
 
+- [关于前期仓库位置错误与开发记录的说明（给老师）](docs/reports/repository-location-explanation.md)
+- [2026-11-26 音效反馈更新报告](docs/reports/2026-11-26-audio.md)
+
 - [2026-11-26 开发修改与验证报告](docs/reports/2026-11-26-progress.md)：背景替换、近期迭代、架构、26 项测试结果及部署失败记录。
 - 背景修改已提交至 `main`（`2ad5324`）。截至本报告核对时，Pages 发布仍因 HTTP 500 失败；代码同步与线上更新状态分别记录，详见报告。
 
@@ -76,3 +79,5 @@ Pages 在 `main` 上的游戏或部署配置更新后自动发布，也可在 Ac
 - 当前共用海底背景 `game/art/background-underwater-24f80eec63d1.png` 由成员通过附件提供；其原始作者及使用授权尚待提供者补齐，不包含在上述从设定图提取素材的说明中。
 - 运行时为原生 ES 模块 + Canvas 2D，没有第三方前端依赖；测试使用 Node.js 内置 `node:test`；只在重新生成素材时需要 Pillow。
 - 部分代码编写、素材裁切脚本与文档整理在 AI 编码助手协助下完成，结果由团队成员检查后提交。
+
+音效：所有关卡共用 `game/audio.mjs`，Web Audio 程序合成，无外部音频素材；首次按键或点击后播放，可使用“音效”按钮静音。音效验证：`node --test game/audio.test.mjs`。

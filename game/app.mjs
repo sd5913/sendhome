@@ -1,5 +1,13 @@
+import {GameAudio,audioSnapshot,soundEvents} from './audio.mjs?v=shared-1';
 import { TILE, SPECS, createState, step, loadInfo, fishAt } from './engine.mjs?v=shared-1';
 async function start() {
+  const audio=new GameAudio();
+  const soundButton=document.getElementById('sound');
+  const updateSound=()=>{soundButton.textContent=audio.muted?'音效：关':'音效：开';soundButton.setAttribute('aria-pressed',String(!audio.muted));};
+  updateSound();soundButton.onclick=()=>{audio.toggle();updateSound();};
+  window.addEventListener('pointerdown',()=>audio.unlock(),{capture:true});
+  window.addEventListener('keydown',()=>audio.unlock(),{capture:true});
+  window.addEventListener('blur',()=>audio.silence());
   const catalogResponse=await fetch('../levels/index.json',{cache:'no-cache'});
   if(!catalogResponse.ok)throw Error('无法读取关卡目录');
   const catalog=await catalogResponse.json();
@@ -34,7 +42,7 @@ let cameraX=0, cameraY=0;
 const keys=new Set(), touch={left:false,right:false,dash:false};
 const list=document.getElementById('fish-list');
 list.innerHTML=SPECS.map((s,i)=>`<button class="fish" data-fish="${i}" aria-pressed="${i===0}"><span class="swatch" style="background:${s.color}"></span><span>${i+1} · ${s.name}<br><span class="meta">${s.width/TILE}×${s.height/TILE} 格 · 重 ${s.weight} · 速 ${s.speed}</span></span></button>`).join('');
-function select(i){state.selected=i;jump=false;}
+function select(i){if(state.selected!==i)audio.play('switch');state.selected=i;jump=false;}
 function reset(){state=createState(LEVEL);keys.clear();touch.left=touch.right=touch.dash=false;jump=false;resetStart=null;accumulator=0;}
 list.querySelectorAll('button').forEach(b=>b.onclick=()=>select(Number(b.dataset.fish)));
 document.getElementById('reset').onclick=reset;
@@ -151,7 +159,7 @@ function frame(t){
   const dt=last?Math.min((t-last)/1000,0.1):0;last=t;
   if(resetStart!==null && t-resetStart>=700)reset();
   accumulator+=dt;
-  while(accumulator>=1/120){step(state,{axis:Number(keys.has('KeyD')||keys.has('ArrowRight')||touch.right)-Number(keys.has('KeyA')||keys.has('ArrowLeft')||touch.left),jump,dash:keys.has('ShiftLeft')||keys.has('ShiftRight')||touch.dash},1/120);jump=false;accumulator-=1/120;}
+  while(accumulator>=1/120){const before=audioSnapshot(state);step(state,{axis:Number(keys.has('KeyD')||keys.has('ArrowRight')||touch.right)-Number(keys.has('KeyA')||keys.has('ArrowLeft')||touch.left),jump,dash:keys.has('ShiftLeft')||keys.has('ShiftRight')||touch.dash},1/120);for(const event of soundEvents(before,state))audio.play(event);jump=false;accumulator-=1/120;}
   render();requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

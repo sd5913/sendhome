@@ -36,7 +36,7 @@ jobs:
         with:
           enablement: true
       - name: Verify shared engine
-        run: node --test game/engine.test.mjs level-1/engine.test.mjs
+        run: node --test game/engine.test.mjs game/audio.test.mjs level-1/engine.test.mjs
       - name: Prepare game website
         run: python3 scripts/build_site.py _site
       - name: Upload website
