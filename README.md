@@ -4,6 +4,10 @@
 
 **后续开发、提交与协作统一使用：https://github.com/sd5913/sendhome 。默认开发分支为 `main`。**
 
+## 差异化设计方案
+
+- [水流中的合作 · 设计方案 v1（2026-11-26）](docs/design/2026-11-26-current-cooperation-proposal.md)：水流与组合抗流、首个合作谜题、统一引擎改动及验收计划。**当前为方案，尚未实现水流玩法。**
+
 ## 开发与修改报告
 
 - [关于前期仓库位置错误与开发记录的说明（给老师）](docs/reports/repository-location-explanation.md)
