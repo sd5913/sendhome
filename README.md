@@ -26,6 +26,8 @@
 | --- | --- |
 | ![](docs/screenshots/level-3-room.png) | ![](docs/screenshots/level-3-mechanisms.png) |
 
+![关卡 4 · 逆流渡桥](docs/screenshots/level-4.png)
+
 ![机关测试场](docs/screenshots/mechanics-test.png)
 
 ### 关卡
@@ -35,6 +37,7 @@
 | 关卡 1 · 基础移动 | 三鱼切换、跳跃、跌落复位与全员集合 | [`levels/level-1.json`](levels/level-1.json) · [`lv1`](design/levels/lv1-blueprint.jpg) |
 | 关卡 2 · 钥匙与重量 | 一条鱼被困房间；捡钥匙开地面门，两条鱼压住压板放出它 | [`levels/level-2.json`](levels/level-2.json) · [`lv2`](design/levels/lv2-blueprint.jpg) |
 | 关卡 3 · 撞门与分工 | 石屋的鱼冲刺撞门；右侧的鱼推箱上压板、再踩箱子跳过矮墙 | [`levels/level-3.json`](levels/level-3.json) · [`lv3`](design/levels/lv3-blueprint.jpg) |
+| 关卡 4 · 逆流渡桥 | 石桥上有强水流，轻鱼会被冲下悬崖；让 C 驮着 A 或 B 分批过桥 | [`levels/level-4.json`](levels/level-4.json) |
 | 机关测试场 | 推箱、压板、钥匙门、冲刺破门 | [`levels/mechanics-test.json`](levels/mechanics-test.json) |
 
 ### 操作
@@ -55,7 +58,7 @@
 
 | 位置 | 职责 |
 | --- | --- |
-| [`game/engine.mjs`](game/engine.mjs) | 唯一的物理与玩法引擎：角色、碰撞、推鱼、承载、负重、箱子、压板、钥匙、门、通关 |
+| [`game/engine.mjs`](game/engine.mjs) | 唯一的物理与玩法引擎：角色、碰撞、推鱼、承载、负重、箱子、压板、钥匙、门、水流、通关 |
 | [`game/app.mjs`](game/app.mjs)、[`game/index.html`](game/index.html)、[`game/style.css`](game/style.css) | 共享输入、绘制、镜头、音效开关、暂停与界面 |
 | [`game/audio.mjs`](game/audio.mjs) | 程序化音效 |
 | [`levels/`](levels/) | 纯 JSON 地编；`index.json` 是关卡目录 |
@@ -112,6 +115,7 @@ Three fish with different sizes, weights and speeds must work together through a
 | Level 1 · Movement | Switch fish, jump across platforms, gather all three at the checkpoint. |
 | Level 2 · Key & Weight | One fish is locked in a room. Find the key, open the ground door, then weigh down the pressure plate with two fish to free it. |
 | Level 3 · Break & Split | The fish in the stone room must dash through a break door; the right-hand fish pushes the crate onto a plate and then stands on the crate to clear the tall wall. |
+| Level 4 · Against the Current | A strong current sweeps light fish off the bridge; C has to carry A or B across one at a time (total weight ≥ 4). |
 | Mechanics Test | Crates, plates, key doors and dash-breaking in one sandbox. |
 
 ### Controls

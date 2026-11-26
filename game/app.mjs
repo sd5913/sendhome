@@ -126,6 +126,15 @@ function render(){
     ctx.drawImage(img,(canvas.width-width)/2,(canvas.height-height)/2,width,height);
   }
   ctx.save();ctx.translate(-cameraX,-cameraY);
+  for(const c of state.currents||[]){
+    ctx.save();
+    ctx.fillStyle='#9fe7ff2e';ctx.fillRect(c.x,c.y,c.width,c.height);
+    ctx.strokeStyle='#eafcffb8';ctx.lineWidth=3;ctx.setLineDash([18,16]);
+    ctx.lineDashOffset=(state.elapsed*90*(c.direction||-1))%34;
+    for(let y=c.y+26;y<c.y+c.height;y+=30){ctx.beginPath();ctx.moveTo(c.x+10,y);ctx.lineTo(c.x+c.width-10,y);ctx.stroke();}
+    ctx.restore();
+    chip(`${c.direction<0?'←':'→'} 水流 · 总重 ≥ ${c.minWeight}`,c.x+10,c.y+18,13,'#1d5f78');
+  }
   for(const label of LEVEL.labels||[])chip(label.text,label.x,label.y,16,'#23414d');
   for(const p of LEVEL.platforms){
     ctx.fillStyle='#4d6f9f';

@@ -13,8 +13,9 @@ const across = (a,b) => a.x < b.x+b.width && a.x+a.width > b.x;
 export function validateLevel(level) {
   if(!level || !Number.isFinite(level.width) || !Number.isFinite(level.height) || level.width<=0 || level.height<=0) throw Error('Invalid level dimensions');
   if(!Array.isArray(level.spawns) || level.spawns.length!==SPECS.length) throw Error('Three spawn points required');
-  const rects=[...(level.platforms||[]),level.goal,...(level.boxes||[]),...(level.plates||[]),...(level.keys||[]),...(level.doors||[])];
+  const rects=[...(level.platforms||[]),level.goal,...(level.boxes||[]),...(level.plates||[]),...(level.keys||[]),...(level.doors||[]),...(level.currents||[])];
   if(rects.some(p=>!p || !['x','y','width','height'].every(k=>Number.isFinite(p[k])) || p.width<=0 || p.height<=0)) throw Error('Invalid level rectangle');
+  for(const c of level.currents||[]) if(!Number.isFinite(c.push)||!Number.isFinite(c.minWeight)) throw Error('Invalid current');
   if(level.spawns.some(p=>!Number.isFinite(p.x)||!Number.isFinite(p.y))) throw Error('Invalid spawn');
   for(const d of level.doors||[]) {
     if(!['plate','key','break'].includes(d.type)) throw Error('Unknown door type');
@@ -27,6 +28,7 @@ export function createState(level) {
   const copy=value=>JSON.parse(JSON.stringify(value||[]));
   return {level,fish:SPECS.map((s,id)=>({...s,id,...level.spawns[id],spawnX:level.spawns[id].x,spawnY:level.spawns[id].y,vx:0,vy:0,grounded:true,support:'平台',arrived:false})),
     boxes:copy(level.boxes).map(b=>({...b,vy:0,label:'箱子'})),plates:copy(level.plates).map(p=>({...p,weight:0,on:false})),keys:copy(level.keys).map(k=>({...k,collected:false})),doors:copy(level.doors).map(d=>({...d,open:false,broken:false})),
+    currents:copy(level.currents).map(c=>({...c,direction:c.direction||-1,minWeight:c.minWeight||4})),
     selected:0,elapsed:0,paused:false,completed:false,completedLevels:0,falls:0,message:level.help};
 }
 function solids(state) {return [...state.level.platforms,...state.doors.filter(d=>!d.open).map(d=>({...d,label:'门'}))];}
@@ -99,7 +101,19 @@ export function step(state, input, dt) {
   const moving=passengers(active,parents);
   const load=moving.slice(1).reduce((sum,f)=>sum+f.weight,0);
   for(const f of state.fish) f.vx=0;
-  active.vx=(input.axis||0)*active.speed*PHYSICS.speed*dash*active.weight/(active.weight+load);
+  // A current sweeps any group lighter than its minWeight: control is lost and
+  // the water carries the fish toward the cliff. A heavy enough carrier (with
+  // the small fish on its back) keeps its footing and can walk through.
+  const current=state.currents.find(c=>moving.some(f=>overlaps(f,c)));
+  const groupWeight=active.weight+load;
+  if(current && groupWeight<current.minWeight){
+    active.vx=(current.direction||-1)*current.push;
+    state.message=`水流太强：当前总重 ${groupWeight}，至少需要 ${current.minWeight} 才能站稳。让重鱼驮着轻鱼一起过。`;
+  } else {
+    active.vx=(input.axis||0)*active.speed*PHYSICS.speed*dash*active.weight/(active.weight+load);
+    if(current) state.message='重量足够，稳住了水流。';
+    else if(state.message && (state.message.startsWith('水流太强')||state.message.startsWith('重量足够'))) state.message=state.level.help;
+  }
   const desiredX=active.vx*dt;
   for(const door of state.doors) if(door.type==='break' && !door.broken && input.dash && Math.abs(active.vx)>=(door.breakSpeed||500) && moving.some(f=>overlaps({...f,x:f.x+desiredX},door))) {door.broken=true;door.open=true;}
   for(const box of state.boxes) {

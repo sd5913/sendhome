@@ -18,7 +18,9 @@ test('all catalog levels validate and do not share mutable mechanism state',()=>
 test('movement, jumping, carrier load and contacts are identical in every map',()=>{
  for(const {id} of read('index')){
   const s=createState(read(id)),[a,b,c]=s.fish;
-  const floor=s.level.platforms[0];b.x=floor.x+120;b.y=floor.y-b.height;a.x=b.x+10;a.y=b.y-a.height;c.x=floor.x;c.y=floor.y-c.height;
+  const floor=[...s.level.platforms].sort((p,q)=>q.width-p.width)[0];
+  s.currents=[]; // this test isolates movement/carrying from water currents
+  b.x=floor.x+120;b.y=floor.y-b.height;a.x=b.x+10;a.y=b.y-a.height;c.x=floor.x;c.y=floor.y-c.height;
   s.selected=1;tick(s,1);const before=b.x;tick(s,30,{axis:1});
   assert.ok(Math.abs(b.x-before-45)<0.001);assert.equal(loadInfo(s,b).load,1);assert.equal(overlaps(a,b),false);
   s.selected=0;step(s,{jump:true},1/120);assert.equal(loadInfo(s,b).load,0);assert.ok(a.vy<0);
@@ -125,6 +127,20 @@ test('level 3 B crosses the tall wall only by standing on the box',()=>{
  for(let i=0;i<300;i++)step(s,{axis:-1,jump:i===5},1/120);
  assert.ok(b.x<972,`B stuck above the wall: ${b.x}`);
  assert.ok(Math.abs(b.y+b.height-720)<1);
+});
+test('level 4 current sweeps a light fish off the bridge',()=>{
+ const s=createState(read('level-4')),a=s.fish[0];s.selected=0;
+ a.x=600;a.y=464;
+ tick(s,420,{axis:1});
+ assert.ok(a.x<900,`A crossed the current alone: ${a.x}`);
+ assert.ok(s.falls>0||a.y>500,`A was not pushed off the bridge: ${a.x},${a.y}`);
+});
+test('level 4 heavy carrier with a rider walks through the current',()=>{
+ const s=createState(read('level-4')),[a,,c]=s.fish;s.selected=2;
+ c.x=340;c.y=428;a.x=340;a.y=392;tick(s,1);
+ tick(s,700,{axis:1});
+ assert.ok(c.x>900,`C stuck in the current at ${c.x}`);
+ assert.ok(a.x>900,`the rider did not come along: ${a.x}`);
 });
 test('invalid door links are rejected at level load',()=>{
  const l=read('mechanics-test');l.doors[0].plateId='missing';assert.throws(()=>createState(l),/Missing plate/);

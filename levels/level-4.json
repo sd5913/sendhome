@@ -1,0 +1,34 @@
+{
+  "id": "level-4",
+  "title": "第四课，逆流渡桥",
+  "subtitle": "石桥上有强水流，太轻的鱼会被直接冲下悬崖。让 C 驮着 A 或 B 一起走，总重够 4 才站得住。",
+  "help": "水流会冲走重量不足的鱼：A 重 1、B 重 2，单独上桥都会被冲下悬崖。C 重 4，空身刚好站稳；让 C 驮着 A（5）或 B（6）一起过，把两条轻鱼分批送到对岸。",
+  "width": 1152,
+  "height": 792,
+  "spawns": [
+    { "x": 156, "y": 524 },
+    { "x": 196, "y": 524 },
+    { "x": 80, "y": 488 }
+  ],
+  "platforms": [
+    { "x": 72, "y": 560, "width": 208, "height": 232, "label": "起点" },
+    { "x": 320, "y": 500, "width": 580, "height": 36, "label": "石桥" },
+    { "x": 900, "y": 500, "width": 252, "height": 292, "label": "对岸" }
+  ],
+  "goal": {
+    "x": 1000,
+    "y": 392,
+    "width": 108,
+    "height": 108
+  },
+  "boxes": [],
+  "plates": [],
+  "keys": [],
+  "doors": [],
+  "currents": [
+    { "id": "river", "x": 320, "y": 400, "width": 580, "height": 160, "push": 240, "direction": -1, "minWeight": 4, "label": "水流" }
+  ],
+  "labels": [
+    { "x": 84, "y": 120, "text": "LV 4" }
+  ]
+}
