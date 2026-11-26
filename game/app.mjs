@@ -1,5 +1,7 @@
 import {GameAudio,audioSnapshot,soundEvents} from './audio.mjs?v=shared-1';
 import { TILE, SPECS, createState, step, loadInfo, fishAt } from './engine.mjs?v=shared-1';
+// One colour per mechanism family: its trigger (key or plate) and its door share it.
+const MECH={key:'#d9a13b',plate:'#4f9e74',break:'#c05a4a'};
 async function start() {
   const audio=new GameAudio();
   const soundButton=document.getElementById('sound');
@@ -111,16 +113,21 @@ function render(){
     ctx.fillStyle='#7cc04a';ctx.beginPath();ctx.roundRect(p.x,p.y,p.width,Math.min(9,p.height),5);ctx.fill();
     ctx.strokeStyle='#2f4a6f';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(p.x,p.y,p.width,p.height,6);ctx.stroke();
   }
-  for(const p of state.plates){ctx.fillStyle=p.on?'#62a57b':'#e4b24d';ctx.fillRect(p.x,p.y,p.width,p.height);text(`${p.weight} / ${p.threshold}`,p.x,p.y-8,13,'#2d5a6b');}
+  for(const p of state.plates){
+    ctx.fillStyle=p.on?'#8fe3b4':MECH.plate;
+    ctx.fillRect(p.x,p.y,p.width,p.height);
+    ctx.strokeStyle='#123a4a';ctx.lineWidth=2;ctx.strokeRect(p.x+1,p.y+1,p.width-2,p.height-2);
+    text(`${p.weight} / ${p.threshold}`,p.x,p.y-8,13,p.on?'#2f6b4d':'#2d5a6b');
+  }
   for(const b of state.boxes){ctx.fillStyle='#bd9b71';ctx.fillRect(b.x,b.y,b.width,b.height);ctx.strokeStyle='#765c3a';ctx.strokeRect(b.x,b.y,b.width,b.height);text('箱子',b.x,b.y-8,13,'#2d5a6b');}
   for(const d of state.doors){
     if(d.open)continue;
-    ctx.fillStyle=d.type==='key'?'#d9a13b':d.type==='plate'?'#4f9e74':'#c05a4a';
+    ctx.fillStyle=MECH[d.type]||MECH.break;
     ctx.fillRect(d.x,d.y,d.width,d.height);
     ctx.fillStyle='#00000026';ctx.fillRect(d.x+5,d.y+10,d.width-10,d.height-20);
     text(d.type==='plate'?'压板门':d.type==='key'?'钥匙门':'撞击门',d.x,d.y-12,13,'#2d5a6b');
   }
-  for(const k of state.keys){if(k.collected)continue;ctx.fillStyle='#e8b92f';ctx.fillRect(k.x,k.y,k.width,k.height);text('钥匙',k.x,k.y-8,13,'#2d5a6b');}
+  for(const k of state.keys){if(k.collected)continue;ctx.fillStyle=MECH.key;ctx.fillRect(k.x,k.y,k.width,k.height);text('钥匙',k.x,k.y-8,13,'#2d5a6b');}
   const g=LEVEL.goal;
   ctx.save();ctx.globalAlpha=0.4;ctx.strokeStyle='#cd6853';ctx.setLineDash([6,5]);ctx.strokeRect(g.x,g.y,g.width,g.height);ctx.restore();
   if(art.door){const dh=g.height*1.1,dw=dh*art.door.width/art.door.height;ctx.drawImage(art.door,g.x+(g.width-dw)/2,g.y+g.height-dh,dw,dh);}
