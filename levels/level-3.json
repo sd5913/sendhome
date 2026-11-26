@@ -1,0 +1,49 @@
+{
+  "id": "level-3",
+  "title": "第三课，撞门与分工",
+  "subtitle": "三只鱼被分在三处：一只困在石屋，一只在平台上，一只在右侧地面。各用所长，在集合点会合。",
+  "help": "石屋里的鱼只能靠冲刺撞开黄色门出来。平台上的鱼被压板门挡住，需要右侧的鱼把箱子推上压板。右侧的鱼还要跳过矮墙回到集合点这一侧。",
+  "width": 1404,
+  "height": 792,
+  "spawns": [
+    { "x": 108, "y": 324 },
+    { "x": 1224, "y": 684 },
+    { "x": 468, "y": 612 }
+  ],
+  "platforms": [
+    { "x": 72, "y": 144, "width": 288, "height": 72, "label": "房顶" },
+    { "x": 72, "y": 144, "width": 72, "height": 252, "label": "房间墙" },
+    { "x": 72, "y": 360, "width": 540, "height": 36, "label": "房间地板" },
+    { "x": 324, "y": 144, "width": 36, "height": 108, "label": "房间墙" },
+    { "x": 576, "y": 396, "width": 36, "height": 216, "label": "柱子" },
+    { "x": 396, "y": 684, "width": 324, "height": 108, "label": "平台" },
+    { "x": 720, "y": 720, "width": 252, "height": 72, "label": "平台" },
+    { "x": 972, "y": 612, "width": 36, "height": 108, "label": "矮墙" },
+    { "x": 1008, "y": 720, "width": 396, "height": 72, "label": "地面" }
+  ],
+  "goal": {
+    "x": 792,
+    "y": 612,
+    "width": 108,
+    "height": 108
+  },
+  "boxes": [
+    { "id": "box", "x": 1116, "y": 662, "width": 58, "height": 58, "weight": 2, "force": 1.5 }
+  ],
+  "plates": [
+    { "id": "plate", "x": 1044, "y": 705, "width": 72, "height": 15, "surfaceY": 720, "threshold": 2 }
+  ],
+  "keys": [],
+  "doors": [
+    { "id": "break-door", "type": "break", "breakSpeed": 500, "x": 324, "y": 252, "width": 36, "height": 108 },
+    { "id": "door1", "type": "plate", "plateId": "plate", "x": 576, "y": 612, "width": 36, "height": 72 }
+  ],
+  "labels": [
+    { "x": 72, "y": 120, "text": "LV 3" },
+    { "x": 380, "y": 236, "text": "撞门" },
+    { "x": 576, "y": 596, "text": "压板门" },
+    { "x": 792, "y": 596, "text": "集合点" },
+    { "x": 1044, "y": 684, "text": "压板" },
+    { "x": 1116, "y": 640, "text": "箱子" }
+  ]
+}

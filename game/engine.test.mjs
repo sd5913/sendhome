@@ -91,6 +91,32 @@ test('level 2 pillar is a three-tile step a single fish can clear',()=>{
  assert.ok(f.x>pillar.x+pillar.width,`stuck before the pillar at ${f.x}`);
  assert.ok(Math.abs(f.y+f.height-576)<1);
 });
+test('level 3 only a dash breaks the room door and frees A',()=>{
+ const s=createState(read('level-3')),f=s.fish[0];s.selected=0;
+ f.x=290;tick(s,20,{axis:1});
+ assert.equal(s.doors[0].broken,false);
+ f.x=290;tick(s,30,{axis:1,dash:true});
+ assert.equal(s.doors[0].broken,true);
+ for(let i=0;i<240;i++)step(s,{axis:1},1/120);
+ assert.ok(f.x>700,`A did not get past the room wall: ${f.x}`);
+ assert.ok(Math.abs(f.y+f.height-684)<1||Math.abs(f.y+f.height-720)<1,`A stuck at ${f.y+f.height}`);
+});
+test('level 3 box on the plate opens door1 so C can leave the platform',()=>{
+ const s=createState(read('level-3')),[a,b,c]=s.fish,plate=s.plates[0],door1=s.doors.find(d=>d.id==='door1');
+ const box=s.boxes[0];box.x=plate.x;tick(s,1);
+ assert.equal(plate.weight,2);assert.equal(plate.on,true);assert.equal(door1.open,true);
+ s.selected=2;c.x=630;c.y=612;
+ tick(s,240,{axis:1});
+ assert.ok(c.x>700,`C stuck behind door1 at ${c.x}`);
+ assert.ok(Math.abs(c.y+c.height-720)<1,`C did not reach the lower floor: ${c.y+c.height}`);
+});
+test('level 3 B can jump the low wall back to the checkpoint side',()=>{
+ const s=createState(read('level-3')),b=s.fish[1];s.selected=1;
+ b.x=1020;b.y=684;
+ for(let i=0;i<240;i++)step(s,{axis:-1,jump:i===20},1/120);
+ assert.ok(b.x<972,`B stuck at the wall: ${b.x}`);
+ assert.ok(Math.abs(b.y+b.height-720)<1);
+});
 test('invalid door links are rejected at level load',()=>{
  const l=read('mechanics-test');l.doors[0].plateId='missing';assert.throws(()=>createState(l),/Missing plate/);
 });
