@@ -6,7 +6,7 @@
 
 *A 2D co-op puzzle platformer about three fish with different weights, sizes and speeds who have to meet at the checkpoint. Development and collaboration happen on `main` in this repository.*
 
-![关卡 4 · 逆流渡桥](docs/screenshots/level-4.png)
+![关卡 2 · 钥匙与重量](docs/screenshots/level-2.png)
 
 ## 中文
 
