@@ -14,6 +14,7 @@
 
 - **在线**：<https://sd5913.github.io/sendhome/>（GitHub Pages）
 - **本地**：在仓库根目录运行 `python3 -m http.server 8000`，打开 <http://localhost:8000/game/?level=level-3>；页面右上角可切换关卡。
+- **通关后**：画面底部会出现「下一关」按钮，直接进入下一关；最后一关会提示重新选择。
 
 ### 截图
 
@@ -102,6 +103,7 @@ Three fish with different sizes, weights and speeds must work together through a
 
 - **Online**: <https://sd5913.github.io/sendhome/>
 - **Local**: run `python3 -m http.server 8000` in the repository root, then open <http://localhost:8000/game/?level=level-1>. Use the level picker at the top right.
+- **After clearing a level**: a “Next level” button appears at the bottom of the canvas; the final level points you back to the level picker.
 
 ### Levels
 

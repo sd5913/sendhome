@@ -14,7 +14,16 @@ async function start() {
   if(!catalogResponse.ok)throw Error('无法读取关卡目录');
   const catalog=await catalogResponse.json();
   const id=new URLSearchParams(location.search).get('level')||catalog[0].id;
-  if(!catalog.some(entry=>entry.id===id))throw Error('找不到这个关卡');
+  const index=catalog.findIndex(entry=>entry.id===id);
+  if(index<0)throw Error('找不到这个关卡');
+  // The mechanics sandbox is not part of the campaign chain.
+  const campaign=catalog.filter(entry=>entry.id!=='mechanics-test');
+  const campaignIndex=campaign.findIndex(entry=>entry.id===id);
+  const nextLevel=campaign[campaignIndex+1]||null;
+  const doneBox=document.getElementById('level-done'),nextButton=document.getElementById('next-level'),doneNote=document.getElementById('done-note');
+  if(nextLevel){nextButton.textContent=`下一关：${nextLevel.title}`;}
+  else{nextButton.hidden=true;doneNote.textContent=campaignIndex>=0?'已是最后一关':'机关测试场没有下一关';}
+  nextButton.onclick=()=>{if(nextLevel)location.search='?level='+encodeURIComponent(nextLevel.id);};
   const response=await fetch(`../levels/${encodeURIComponent(id)}.json`,{cache:'no-cache'});
   if(!response.ok)throw Error('无法读取关卡数据');
   const LEVEL=await response.json();
@@ -43,6 +52,8 @@ const params=new URLSearchParams(location.search);
 const startWith=Number(params.get('select'));
 if(Number.isInteger(startWith)&&startWith>=0&&startWith<3)state.selected=startWith;
 const camOffset=Number(params.get('cam'))||0;
+// ?done=1 shows the completion overlay without playing through the level.
+if(params.get('done')==='1'){state.completed=true;state.completedLevels=1;}
 let cameraX=0, cameraY=0;
 const keys=new Set(), touch={left:false,right:false,dash:false};
 const list=document.getElementById('fish-list');
@@ -160,6 +171,7 @@ function render(){
   }
   ctx.restore();
   if(state.paused||state.completed){ctx.fillStyle='#183c43cc';ctx.fillRect(0,0,canvas.width,canvas.height);text(state.completed?'全员集合，关卡完成':'已暂停',canvas.width/2,canvas.height/2-15,36,'white','center');text(state.completed?`三位伙伴已集合 · 用时 ${state.elapsed.toFixed(1)} 秒`:'按 Esc 或点击继续',canvas.width/2,canvas.height/2+32,20,'white','center');}
+  if(doneBox.hidden===state.completed){doneBox.hidden=!state.completed;if(state.completed&&!nextButton.hidden)nextButton.focus({preventScroll:true});}
   document.getElementById('count').textContent=`${state.fish.filter(f=>f.arrived).length} / 3`;
   document.getElementById('time').textContent=`${state.elapsed.toFixed(1)} s`;
   document.getElementById('support').textContent=state.fish[state.selected].support;
