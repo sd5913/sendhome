@@ -75,7 +75,7 @@ node --test game/engine.test.mjs game/audio.test.mjs level-1/engine.test.mjs
 
 ### 美术
 
-角色设定图、五帧动画参考与场景设定图都在 [`assets/`](assets/)；`game/art/` 里的透明精灵和背景是脚本从这些图裁出来的，不是第三方素材。箱子、压板、钥匙等道具目前仍是几何绘制。
+角色设定图、五帧动画参考与场景设定图都在 [`assets/`](assets/)；`game/art/` 里的角色精灵和终点门由 `scripts/build_art.py` 从这些图裁出，背景使用成员提供的海底插画 [`background-underwater`](game/art/background-underwater-24f80eec63d1.png)。箱子、压板、钥匙等道具目前仍是几何绘制。
 
 ### 文档与进度
 
@@ -145,6 +145,6 @@ Covers level validation, fish movement and carrying, crate/plate/key/break-door 
 
 ### Art & credits
 
-Character sheets, five-frame animation references and environment art live in `assets/`. The transparent sprites and backgrounds in `game/art/` are generated from them by `scripts/build_art.py`; no third-party art is bundled. Crates, plates and keys are still drawn as primitives.
+Character sheets, five-frame animation references and environment art live in `assets/`. The character sprites and goal door in `game/art/` are generated from them by `scripts/build_art.py`; the background is an underwater illustration supplied by a team member. No third-party art is bundled. Crates, plates and keys are still drawn as primitives.
 
 The project uses plain ES modules and Canvas 2D with no front-end dependencies; tests use Node's built-in `node:test`. Part of the code, the art-extraction script and the documentation were prepared with an AI coding assistant and reviewed by the team before committing.
