@@ -22,7 +22,7 @@
 
 - **关卡 1 · 基础移动**：三鱼切换、跳跃、跌落复位与全员集合，详见 [关卡说明](level-1/README.md)。
 - **关卡 2 · 钥匙与重量**：一名伙伴被困在房间里；捡钥匙打开地面的门，再用两条鱼压住压板放出它，最后三鱼一起到集合点。地编见 [`levels/level-2.json`](levels/level-2.json)，手绘蓝本见 [`design/levels/lv2-blueprint.jpg`](design/levels/lv2-blueprint.jpg)。
-- **关卡 3 · 撞门与分工**：三条鱼分处石屋、平台和右侧地面；石屋的鱼冲刺撞开黄门，右侧的鱼把箱子推上压板放出平台上的鱼，再跳过矮墙回合。地编见 [`levels/level-3.json`](levels/level-3.json)，手绘蓝本见 [`design/levels/lv3-blueprint.jpg`](design/levels/lv3-blueprint.jpg)。
+- **关卡 3 · 撞门与分工**：三条鱼分处石屋、平台和右侧地面；石屋的鱼冲刺撞开黄门，右侧的鱼把箱子推上压板放出平台上的鱼，再踩上箱子跳过矮墙回合。地编见 [`levels/level-3.json`](levels/level-3.json)，手绘蓝本见 [`design/levels/lv3-blueprint.jpg`](design/levels/lv3-blueprint.jpg)。
 - **机关测试场**：推箱、压板、钥匙门与冲刺破门。
 
 在仓库根目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000/game/?level=level-3 。

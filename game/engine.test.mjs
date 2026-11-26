@@ -110,11 +110,20 @@ test('level 3 box on the plate opens door1 so C can leave the platform',()=>{
  assert.ok(c.x>700,`C stuck behind door1 at ${c.x}`);
  assert.ok(Math.abs(c.y+c.height-720)<1,`C did not reach the lower floor: ${c.y+c.height}`);
 });
-test('level 3 B can jump the low wall back to the checkpoint side',()=>{
+test('level 3 tall wall blocks a plain jump from the floor',()=>{
  const s=createState(read('level-3')),b=s.fish[1];s.selected=1;
- b.x=1020;b.y=684;
- for(let i=0;i<240;i++)step(s,{axis:-1,jump:i===20},1/120);
- assert.ok(b.x<972,`B stuck at the wall: ${b.x}`);
+ b.x=1030;b.y=684;
+ for(let i=0;i<300;i++)step(s,{axis:-1,jump:i===20},1/120);
+ assert.ok(b.x>=1008,`B cleared the wall without the box: ${b.x}`);
+ assert.ok(Math.abs(b.y+b.height-720)<1);
+});
+test('level 3 B crosses the tall wall only by standing on the box',()=>{
+ const s=createState(read('level-3')),b=s.fish[1],box=s.boxes[0];s.selected=1;
+ box.x=1008;box.y=648;b.x=1086;b.y=684;
+ for(let i=0;i<300;i++)step(s,{axis:-1,jump:i===5},1/120);
+ assert.ok(Math.abs(b.y+b.height-648)<1,`B did not land on the box: ${b.y+b.height}`);
+ for(let i=0;i<300;i++)step(s,{axis:-1,jump:i===5},1/120);
+ assert.ok(b.x<972,`B stuck above the wall: ${b.x}`);
  assert.ok(Math.abs(b.y+b.height-720)<1);
 });
 test('invalid door links are rejected at level load',()=>{
