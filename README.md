@@ -1,93 +1,148 @@
 # sendhome · 送小鱼回家
 
-二维合作解谜游戏的整合仓库，包含可玩的原型、从设定稿提取的角色动画及成员提供的海底背景、角色设计、场景美术与原始设计文档。
+[中文](#中文) · [English](#english)
 
-**后续开发、提交与协作统一使用：https://github.com/sd5913/sendhome 。默认开发分支为 `main`。**
+二维合作解谜游戏：三条体型、重量、速度不同的小鱼，各自穿过机关，最后在集合点会合。后续开发、提交与协作统一使用本仓库的 `main` 分支。
 
-## 差异化设计方案
+*A 2D co-op puzzle platformer about three fish with different weights, sizes and speeds who have to meet at the checkpoint. Development and collaboration happen on `main` in this repository.*
 
-- [水流中的合作 · 设计方案 v1（2026-11-26）](docs/design/2026-11-26-current-cooperation-proposal.md)：水流与组合抗流、首个合作谜题、统一引擎改动及验收计划。**当前为方案，尚未实现水流玩法。**
+![关卡 3 · 撞门与分工](docs/screenshots/level-3-room.png)
 
-## 开发与修改报告
+## 中文
 
-- [关于前期仓库位置错误与开发记录的说明（给老师）](docs/reports/repository-location-explanation.md)
-- [2026-11-26 音效反馈更新报告](docs/reports/2026-11-26-audio.md)
+### 试玩
 
-- [2026-11-26 开发修改与验证报告](docs/reports/2026-11-26-progress.md)：背景替换、近期迭代、架构、26 项测试结果及部署失败记录。
-- 更新：音效与新背景已随提交 `51b53b4` 成功部署，见 [成功运行](https://github.com/sd5913/sendhome/actions/runs/45652808179)。此前 HTTP 500 故障记录作为历史保留，详见报告。
+- **在线**：<https://sd5913.github.io/sendhome/>（GitHub Pages）
+- **本地**：在仓库根目录运行 `python3 -m http.server 8000`，打开 <http://localhost:8000/game/?level=level-3>；页面右上角可切换关卡。
 
-## 试玩关卡
+### 截图
 
-正式游戏入口：[在线试玩](https://sd5913.github.io/sendhome/)（GitHub Pages 部署成功后可访问）。页面右上角可以切换关卡：
+| 关卡 1 · 基础移动 | 关卡 2 · 钥匙与重量 |
+| --- | --- |
+| ![](docs/screenshots/level-1.png) | ![](docs/screenshots/level-2.png) |
 
-- **关卡 1 · 基础移动**：三鱼切换、跳跃、跌落复位与全员集合，详见 [关卡说明](level-1/README.md)。
-- **关卡 2 · 钥匙与重量**：一名伙伴被困在房间里；捡钥匙打开地面的门，再用两条鱼压住压板放出它，最后三鱼一起到集合点。地编见 [`levels/level-2.json`](levels/level-2.json)，手绘蓝本见 [`design/levels/lv2-blueprint.jpg`](design/levels/lv2-blueprint.jpg)。
-- **关卡 3 · 撞门与分工**：三条鱼分处石屋、平台和右侧地面；石屋的鱼冲刺撞开黄门，右侧的鱼把箱子推上压板放出平台上的鱼，再踩上箱子跳过矮墙回合。地编见 [`levels/level-3.json`](levels/level-3.json)，手绘蓝本见 [`design/levels/lv3-blueprint.jpg`](design/levels/lv3-blueprint.jpg)。
-- **机关测试场**：推箱、压板、钥匙门与冲刺破门。
+| 关卡 3 · 石屋与撞门 | 关卡 3 · 压板、箱子与矮墙 |
+| --- | --- |
+| ![](docs/screenshots/level-3-room.png) | ![](docs/screenshots/level-3-mechanisms.png) |
 
-在仓库根目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000/game/?level=level-3 。
+![机关测试场](docs/screenshots/mechanics-test.png)
 
-## 代码结构与关卡编辑
+### 关卡
 
-所有关卡使用同一套代码：
+| 关卡 | 内容 | 地编 / 蓝本 |
+| --- | --- | --- |
+| 关卡 1 · 基础移动 | 三鱼切换、跳跃、跌落复位与全员集合 | [`levels/level-1.json`](levels/level-1.json) · [`lv1`](design/levels/lv1-blueprint.jpg) |
+| 关卡 2 · 钥匙与重量 | 一条鱼被困房间；捡钥匙开地面门，两条鱼压住压板放出它 | [`levels/level-2.json`](levels/level-2.json) · [`lv2`](design/levels/lv2-blueprint.jpg) |
+| 关卡 3 · 撞门与分工 | 石屋的鱼冲刺撞门；右侧的鱼推箱上压板、再踩箱子跳过矮墙 | [`levels/level-3.json`](levels/level-3.json) · [`lv3`](design/levels/lv3-blueprint.jpg) |
+| 机关测试场 | 推箱、压板、钥匙门、冲刺破门 | [`levels/mechanics-test.json`](levels/mechanics-test.json) |
+
+### 操作
+
+| 操作 | 按键 |
+| --- | --- |
+| 移动 | `A` / `D` 或 `←` / `→` |
+| 跳跃 | `W` / `空格` / `↑` |
+| 切换控制的鱼 | `1` / `2` / `3`、`Tab`，或直接点击画面里的小鱼 |
+| 冲刺（撞门） | `Shift` |
+| 暂停 / 重置 | `Esc` / 长按 `R` |
+
+三条鱼的属性是全局规则：A `1×1` 格、重 1、速 2；B `2×1` 格、重 2、速 1.5；C `2×2` 格、重 4、速 1。站在伙伴背上会随它移动，但负重会同时降低移动、推动和跳跃能力。
+
+### 代码结构
+
+所有关卡共用一套引擎和界面，关卡只是 `levels/` 下的 JSON 地编：
 
 | 位置 | 职责 |
 | --- | --- |
-| `game/engine.mjs` | 唯一物理与玩法引擎：角色、碰撞、推鱼、承载、负重、箱子、压板、钥匙、门、通关 |
-| `game/app.mjs`、`game/index.html`、`game/style.css` | 共享输入、绘制、镜头、暂停、重置和界面 |
-| `levels/level-1.json` | 正式第一关地编 |
-| `levels/mechanics-test.json` | 机关测试场地编 |
-| `levels/index.json` | 可选关卡目录 |
-| `scripts/build_site.py` | 只打包一份引擎与界面，并按内容生成资源版本，防止旧脚本缓存 |
+| [`game/engine.mjs`](game/engine.mjs) | 唯一的物理与玩法引擎：角色、碰撞、推鱼、承载、负重、箱子、压板、钥匙、门、通关 |
+| [`game/app.mjs`](game/app.mjs)、[`game/index.html`](game/index.html)、[`game/style.css`](game/style.css) | 共享输入、绘制、镜头、音效开关、暂停与界面 |
+| [`game/audio.mjs`](game/audio.mjs) | 程序化音效 |
+| [`levels/`](levels/) | 纯 JSON 地编；`index.json` 是关卡目录 |
+| [`game/art/`](game/art/) | 从设计稿裁出的角色五帧、视差背景与终点门 |
+| [`scripts/build_site.py`](scripts/build_site.py) | 部署打包：一份引擎 + 一份界面 + 全部地编 |
+| [`scripts/build_art.py`](scripts/build_art.py) | 从 `assets/` 设定图生成透明游戏素材（需要 Pillow） |
 
-新增关卡仅需添加 JSON 并登记目录；角色尺寸、重量、速度、跳跃、承载公式等全局规则不可在关卡中覆盖。地编可配置平台、出生点、检查点、机关摆放与关联、标签和引导文字。旧的 `level-1/`、`game-whitebox/` URL 保留为跳转入口，不再包含独立实现。
+新增普通关卡只需要添加 `levels/<id>.json` 并登记到 `levels/index.json`，不需要复制引擎或界面。
 
-验证：`node --test game/engine.test.mjs level-1/engine.test.mjs`。部署前也会运行这些测试。
-
-## 内容
-
-- [`levels/`](levels/)：所有关卡的纯 JSON 地编。
-- [`design/levels/`](design/levels/)：关卡手绘格线蓝本，按关卡登记，作为地编的设计依据。
-- [`game/`](game/)：所有关卡共用的运行代码。
-- [`game/art/`](game/art/)：从设计稿裁出的角色五帧序列、三层视差背景和终点门（由 `scripts/build_art.py` 生成）。
-- [`scripts/build_art.py`](scripts/build_art.py)：把 `assets/` 里的设定图裁成透明背景的游戏素材；需要 Pillow，只在重新生成素材时运行。
-- [`level-1/`](level-1/)：第一关入口、说明及路线验证。
-- [`game-whitebox/`](game-whitebox/)：机关测试场兼容入口及操作说明。
-- [`CHARACTER_DESIGN.md`](CHARACTER_DESIGN.md)：三条鱼的角色属性与设计过程。
-- [`assets/characters/`](assets/characters/)：角色设定图及五帧动画参考。
-- [`assets/environment/`](assets/environment/)：双语场景设计图。
-- [`期末teamwork.docx`](期末teamwork.docx)：原始游戏设计文档。
-
-## 本地运行
-
-在仓库根目录执行：
+### 测试
 
 ```sh
-python3 -m http.server 8000
+node --test game/engine.test.mjs game/audio.test.mjs level-1/engine.test.mjs
 ```
 
-浏览器打开 http://localhost:8000/game-whitebox/ 。所有场景均需通过本地 HTTP 服务器或在线 Pages 运行（ES 模块和关卡 JSON 不能通过 file:// 读取）。
+覆盖关卡数据校验、三鱼移动与承载、推箱/压板/钥匙/撞门、负重跳跃、关卡 2 与关卡 3 的完整机关流程、部署打包等。
 
-移动：A/D 或方向键；跳跃：W/空格/↑；冲刺：Shift；切换角色：1/2/3、Tab 或点击画面中的小鱼；暂停：Esc；重置：长按 R。
+### 美术
 
-## 整合来源
+角色设定图、五帧动画参考与场景设定图都在 [`assets/`](assets/)；`game/art/` 里的透明精灵和背景是脚本从这些图裁出来的，不是第三方素材。箱子、压板、钥匙等道具目前仍是几何绘制。
 
-2026-11-19 将 https://github.com/nolaLV999/codesk 的两个分支完整合并至本仓库，保留双方提交历史：
+### 文档与进度
 
-| 来源分支 | 原始提交 | 内容 |
-| --- | --- | --- |
-| `main` | `94319fe56cdaa2bce51246fe1adc33eeabacde94` | 角色、动画、场景美术与设计文档 |
-| `whitebox-playable-test` | `bb6e80b76e55ae5e283a9229694be4c45e9f559b` | 可玩原型与 Pages 工作流 |
+- [关卡手绘蓝本](design/levels/)：每关的手绘格线图与对应说明。
+- [角色设计过程](CHARACTER_DESIGN.md)。
+- [差异化设计方案：水流中的合作（2026-11-26，方案阶段）](docs/design/2026-11-26-current-cooperation-proposal.md)。
+- 开发报告：[进度与验证](docs/reports/2026-11-26-progress.md)、[音效](docs/reports/2026-11-26-audio.md)、[仓库位置说明](docs/reports/repository-location-explanation.md)。
+- 原始设计文档：[`期末teamwork.docx`](期末teamwork.docx)。
 
-美术资料与白模代码已归档到同一个项目。角色和终点门已从设定图裁成透明素材接入运行画面；共用背景现已改为成员提供的海底插画（旧三层视差素材保留），箱子、压板、钥匙等道具的设定图目前仍是单张插画，尚未做成可拼接的精灵，所以这些道具暂时保持几何绘制。
+### 素材、工具与 AI 使用
 
-Pages 在 `main` 上的游戏或部署配置更新后自动发布，也可在 Actions 中手动运行 `Deploy game to GitHub Pages`。站点根入口打开正式关卡 1；旧机关测试关保留在 `/game-whitebox/`。所有关卡统一从 `/game/` 加载，旧入口自动跳转。部署仅包含游戏运行文件，不上传设计文档、测试代码或原始蓝本。
+- 美术为项目原创设定图；运行时是原生 ES 模块 + Canvas 2D，没有第三方前端依赖。
+- 测试使用 Node.js 内置 `node:test`；素材生成脚本使用 Pillow。
+- 部分代码、素材裁切脚本与文档整理在 AI 编码助手协助下完成，结果由团队成员检查后提交。
 
-## 素材、工具与 AI 使用
+---
 
-- 角色设定图、五帧动画参考与场景设定图均为本项目 `assets/` 内的原创美术资料；`game/art/` 里的透明精灵、背景层与终点门由 `scripts/build_art.py` 从这些图提取生成，没有引入第三方素材。
-- 当前共用海底背景 `game/art/background-underwater-24f80eec63d1.png` 由成员通过附件提供；其原始作者及使用授权尚待提供者补齐，不包含在上述从设定图提取素材的说明中。
-- 运行时为原生 ES 模块 + Canvas 2D，没有第三方前端依赖；测试使用 Node.js 内置 `node:test`；只在重新生成素材时需要 Pillow。
-- 部分代码编写、素材裁切脚本与文档整理在 AI 编码助手协助下完成，结果由团队成员检查后提交。
+## English
 
-音效：所有关卡共用 `game/audio.mjs`，Web Audio 程序合成，无外部音频素材；首次按键或点击后播放，可使用“音效”按钮静音。音效验证：`node --test game/audio.test.mjs`。
+### Overview
+
+Three fish with different sizes, weights and speeds must work together through a series of puzzle levels. Every fish matters: light fish cannot push heavy crates, heavy riders slow a carrier down, and a fish carrying someone on its back can barely jump.
+
+### Play
+
+- **Online**: <https://sd5913.github.io/sendhome/>
+- **Local**: run `python3 -m http.server 8000` in the repository root, then open <http://localhost:8000/game/?level=level-1>. Use the level picker at the top right.
+
+### Levels
+
+| Level | What happens |
+| --- | --- |
+| Level 1 · Movement | Switch fish, jump across platforms, gather all three at the checkpoint. |
+| Level 2 · Key & Weight | One fish is locked in a room. Find the key, open the ground door, then weigh down the pressure plate with two fish to free it. |
+| Level 3 · Break & Split | The fish in the stone room must dash through a break door; the right-hand fish pushes the crate onto a plate and then stands on the crate to clear the tall wall. |
+| Mechanics Test | Crates, plates, key doors and dash-breaking in one sandbox. |
+
+### Controls
+
+`A`/`D` or arrows to move · `W`/`Space`/`↑` to jump · `1`/`2`/`3`, `Tab`, or click a fish to switch · `Shift` to dash · `Esc` to pause · hold `R` to reset.
+
+### Architecture
+
+One shared engine and one shared UI; levels are pure JSON data.
+
+| Path | Role |
+| --- | --- |
+| `game/engine.mjs` | The only physics/gameplay engine: movement, collisions, pushing, carrying, weight, crates, plates, keys, doors, completion |
+| `game/app.mjs`, `game/index.html`, `game/style.css` | Shared input, rendering, camera, audio toggle, pause and UI |
+| `game/audio.mjs` | Procedural sound effects |
+| `level-1/`, `game-whitebox/` | Legacy URLs that redirect to the shared runtime |
+| `levels/` | Data-only level JSON; `index.json` lists the catalog |
+| `game/art/` | Character strips, parallax background and goal door extracted from the design sheets |
+| `scripts/build_site.py` | Packages the site: one engine, one UI, all levels |
+| `scripts/build_art.py` | Regenerates the game art from `assets/` (needs Pillow) |
+
+A new ordinary level is just a new `levels/<id>.json` plus an entry in `levels/index.json` — no engine or UI copy.
+
+### Tests
+
+```sh
+node --test game/engine.test.mjs game/audio.test.mjs level-1/engine.test.mjs
+```
+
+Covers level validation, fish movement and carrying, crate/plate/key/break-door mechanics, loaded jumps, the full level 2 and level 3 puzzle flows, and the deployment package.
+
+### Art & credits
+
+Character sheets, five-frame animation references and environment art live in `assets/`. The transparent sprites and backgrounds in `game/art/` are generated from them by `scripts/build_art.py`; no third-party art is bundled. Crates, plates and keys are still drawn as primitives.
+
+The project uses plain ES modules and Canvas 2D with no front-end dependencies; tests use Node's built-in `node:test`. Part of the code, the art-extraction script and the documentation were prepared with an AI coding assistant and reviewed by the team before committing.
