@@ -1,46 +1,44 @@
 {
   "id": "level-2",
   "title": "第二课，钥匙与重量",
-  "subtitle": "捡钥匙开绿门，把箱子推上压板开橙门，三条鱼一起进入集合房。",
-  "help": "A 体型轻，推不动箱子；B 和 C 能推。把箱子推到压板上，重量达到 2 门就会保持打开，鱼就能空出手一起上台阶。钥匙会让对应颜色的门打开。",
-  "width": 1584,
+  "subtitle": "一条鱼被困在房间里。拿到钥匙打开地面的门，再用两条鱼一起压住压板，放它出来。",
+  "help": "地面上的钥匙打开绿色钥匙门。压板需要重量 3：A 只有 1，单独踩不动；B 背 A，或 A、B 一起站上去才够重。压板让房间的门打开，房间里那条鱼就能出来。三条鱼一起到右侧集合点。",
+  "width": 1044,
   "height": 792,
   "spawns": [
-    { "x": 180, "y": 684 },
-    { "x": 126, "y": 684 },
-    { "x": 72, "y": 648 }
+    { "x": 198, "y": 540 },
+    { "x": 288, "y": 540 },
+    { "x": 648, "y": 252 }
   ],
   "platforms": [
-    { "x": 0, "y": 720, "width": 1584, "height": 72, "label": "地面" },
-    { "x": 1116, "y": 648, "width": 72, "height": 36, "label": "台阶" },
-    { "x": 1188, "y": 576, "width": 72, "height": 36, "label": "台阶" },
-    { "x": 1260, "y": 540, "width": 288, "height": 36, "label": "集合房地板" },
-    { "x": 1260, "y": 360, "width": 288, "height": 36, "label": "房顶" },
-    { "x": 1512, "y": 432, "width": 36, "height": 108, "label": "房墙" }
+    { "x": 36, "y": 576, "width": 972, "height": 72, "label": "地面" },
+    { "x": 360, "y": 468, "width": 36, "height": 108, "label": "柱子" },
+    { "x": 540, "y": 324, "width": 36, "height": 180, "label": "房间墙" },
+    { "x": 540, "y": 324, "width": 288, "height": 36, "label": "房间地板" },
+    { "x": 540, "y": 180, "width": 288, "height": 36, "label": "房顶" }
   ],
   "goal": {
-    "x": 1404,
-    "y": 432,
+    "x": 900,
+    "y": 468,
     "width": 108,
     "height": 108
   },
-  "boxes": [
-    { "id": "box", "x": 720, "y": 662, "width": 58, "height": 58, "weight": 2, "force": 1.5 }
-  ],
+  "boxes": [],
   "plates": [
-    { "id": "plate", "x": 792, "y": 705, "width": 112, "height": 15, "surfaceY": 720, "threshold": 2 }
+    { "id": "plate", "x": 720, "y": 561, "width": 72, "height": 15, "surfaceY": 576, "threshold": 3 }
   ],
   "keys": [
-    { "id": "key", "x": 468, "y": 686, "width": 24, "height": 34 }
+    { "id": "key", "x": 432, "y": 542, "width": 24, "height": 34 }
   ],
   "doors": [
-    { "id": "key-door", "type": "key", "keyId": "key", "x": 648, "y": 588, "width": 34, "height": 132 },
-    { "id": "plate-door", "type": "plate", "plateId": "plate", "x": 1044, "y": 588, "width": 34, "height": 132 }
+    { "id": "door2", "type": "key", "keyId": "key", "x": 540, "y": 504, "width": 34, "height": 72 },
+    { "id": "door1", "type": "plate", "plateId": "plate", "x": 756, "y": 216, "width": 34, "height": 108 }
   ],
   "labels": [
-    { "x": 72, "y": 108, "text": "LV 2" },
-    { "x": 468, "y": 640, "text": "钥匙" },
-    { "x": 792, "y": 640, "text": "推箱上压板" },
-    { "x": 1368, "y": 336, "text": "集合房间" }
+    { "x": 36, "y": 120, "text": "LV 2" },
+    { "x": 600, "y": 156, "text": "房间" },
+    { "x": 432, "y": 516, "text": "钥匙" },
+    { "x": 700, "y": 540, "text": "压板" },
+    { "x": 900, "y": 450, "text": "集合点" }
   ]
 }

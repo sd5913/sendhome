@@ -18,7 +18,7 @@ test('all catalog levels validate and do not share mutable mechanism state',()=>
 test('movement, jumping, carrier load and contacts are identical in every map',()=>{
  for(const {id} of read('index')){
   const s=createState(read(id)),[a,b,c]=s.fish;
-  const floor=s.level.platforms[0];b.x=250;b.y=floor.y-b.height;a.x=260;a.y=b.y-a.height;c.x=72;c.y=floor.y-c.height;
+  const floor=s.level.platforms[0];b.x=floor.x+120;b.y=floor.y-b.height;a.x=b.x+10;a.y=b.y-a.height;c.x=floor.x;c.y=floor.y-c.height;
   s.selected=1;tick(s,1);const before=b.x;tick(s,30,{axis:1});
   assert.ok(Math.abs(b.x-before-45)<0.001);assert.equal(loadInfo(s,b).load,1);assert.equal(overlaps(a,b),false);
   s.selected=0;step(s,{jump:true},1/120);assert.equal(loadInfo(s,b).load,0);assert.ok(a.vy<0);
@@ -49,28 +49,41 @@ test('respawn uses arbitrary level data rather than LV1 coordinates',()=>{
  const l=read('level-1');l.width=1800;l.platforms=[{x:0,y:300,width:1800,height:36}];l.spawns=[{x:100,y:264},{x:200,y:264},{x:300,y:228}];
  const s=createState(l);s.fish[0].y=l.height+40;tick(s,1);assert.equal(s.fish[0].y,264);assert.equal(s.fish[0].x,100);
 });
-test('level 2 needs the key, then the box holds its plate door open',()=>{
+test('level 2 key opens the ground door and the room fish stays locked in',()=>{
  const s=createState(read('level-2'));
- const keyDoor=s.doors.find(d=>d.id==='key-door'),plateDoor=s.doors.find(d=>d.id==='plate-door');
- assert.equal(keyDoor.open,false);assert.equal(plateDoor.open,false);
+ const door2=s.doors.find(d=>d.id==='door2'),door1=s.doors.find(d=>d.id==='door1');
+ assert.equal(door2.open,false);assert.equal(door1.open,false);
  s.fish[0].x=s.keys[0].x;tick(s,1);
- assert.equal(s.keys[0].collected,true);assert.equal(keyDoor.open,true);
- const box=s.boxes[0],plate=s.plates[0];
- box.x=plate.x;tick(s,1);
- assert.equal(plate.weight,2);assert.equal(plate.on,true);assert.equal(plateDoor.open,true);
- // Everyone can leave: the box keeps the plate pressed without a fish on it.
- for(const f of s.fish)f.x=plate.x+plate.width+120;
- tick(s,1);
- assert.equal(plate.on,true);assert.equal(plateDoor.open,true);
+ assert.equal(s.keys[0].collected,true);assert.equal(door2.open,true);
+ s.selected=2;const roomFish=s.fish[2],start=roomFish.x;
+ tick(s,120,{axis:1});
+ assert.ok(roomFish.x<720,`room fish escaped a closed door at ${roomFish.x}`);
+ assert.ok(roomFish.x>=start);
 });
-test('level 2 room floor is reachable with plain jumps and no dash',()=>{
- const s=createState(read('level-2')),f=s.fish[0];s.selected=0;
- f.x=1050;f.y=720-f.height;f.vx=0;f.vy=0;f.grounded=true;
- for(let jump=0;jump<4&&f.y+f.height>540.5;jump++){
-  step(s,{jump:true},1/120);
-  for(let i=0;i<300;i++){step(s,{axis:1},1/120);if(f.grounded)break;}
- }
- assert.ok(f.y+f.height<=540.5,`stopped at ${f.y+f.height}`);
+test('level 2 plate needs weight 3, so A alone cannot open the room door',()=>{
+ const s=createState(read('level-2')),[a,b]=s.fish,plate=s.plates[0],door1=s.doors.find(d=>d.id==='door1');
+ a.x=plate.x;a.y=540;tick(s,1);
+ assert.equal(plate.weight,1);assert.equal(door1.open,false);
+ b.x=plate.x;b.y=540;tick(s,1);
+ assert.equal(plate.weight,3);assert.equal(plate.on,true);assert.equal(door1.open,true);
+ a.x-=200;tick(s,1);
+ assert.equal(door1.open,false);
+});
+test('level 2 room fish leaves once the plate opens its door',()=>{
+ const s=createState(read('level-2')),[a,b,c]=s.fish,plate=s.plates[0];
+ a.x=plate.x;a.y=540;b.x=plate.x;b.y=540;tick(s,1);
+ s.selected=2;
+ tick(s,240,{axis:1});
+ assert.ok(c.x>790,`room fish stuck at ${c.x}`);
+ assert.ok(Math.abs(c.y+c.height-576)<1,`room fish did not reach the ground: ${c.y+c.height}`);
+});
+test('level 2 pillar is a three-tile step a single fish can clear',()=>{
+ const s=createState(read('level-2')),pillar=s.level.platforms.find(p=>p.label==='柱子');
+ assert.equal(pillar.height,108);
+ const f=s.fish[0];s.selected=0;f.x=300;f.y=540;
+ for(let i=0;i<240;i++)step(s,{axis:1,jump:i===0},1/120);
+ assert.ok(f.x>pillar.x+pillar.width,`stuck before the pillar at ${f.x}`);
+ assert.ok(Math.abs(f.y+f.height-576)<1);
 });
 test('invalid door links are rejected at level load',()=>{
  const l=read('mechanics-test');l.doors[0].plateId='missing';assert.throws(()=>createState(l),/Missing plate/);

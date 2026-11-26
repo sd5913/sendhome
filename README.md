@@ -21,7 +21,7 @@
 正式游戏入口：[在线试玩](https://sd5913.github.io/sendhome/)（GitHub Pages 部署成功后可访问）。页面右上角可以切换关卡：
 
 - **关卡 1 · 基础移动**：三鱼切换、跳跃、跌落复位与全员集合，详见 [关卡说明](level-1/README.md)。
-- **关卡 2 · 钥匙与重量**：捡钥匙开绿门 → 把箱子推上压板开橙门 → 爬上台阶进入集合房；地编见 [`levels/level-2.json`](levels/level-2.json)，手绘蓝本见 [`design/levels/lv2-blueprint.jpg`](design/levels/lv2-blueprint.jpg)。
+- **关卡 2 · 钥匙与重量**：一名伙伴被困在房间里；捡钥匙打开地面的门，再用两条鱼压住压板放出它，最后三鱼一起到集合点。地编见 [`levels/level-2.json`](levels/level-2.json)，手绘蓝本见 [`design/levels/lv2-blueprint.jpg`](design/levels/lv2-blueprint.jpg)。
 - **机关测试场**：推箱、压板、钥匙门与冲刺破门。
 
 在仓库根目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000/game/?level=level-2 。
