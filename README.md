@@ -16,11 +16,15 @@
 - [2026-11-26 开发修改与验证报告](docs/reports/2026-11-26-progress.md)：背景替换、近期迭代、架构、26 项测试结果及部署失败记录。
 - 更新：音效与新背景已随提交 `51b53b4` 成功部署，见 [成功运行](https://github.com/sd5913/sendhome/actions/runs/45652808179)。此前 HTTP 500 故障记录作为历史保留，详见报告。
 
-## 试玩关卡 1
+## 试玩关卡
 
-正式游戏入口：[在线试玩](https://sd5913.github.io/sendhome/)（GitHub Pages 部署成功后可访问）。
+正式游戏入口：[在线试玩](https://sd5913.github.io/sendhome/)（GitHub Pages 部署成功后可访问）。页面右上角可以切换关卡：
 
-在仓库根目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000/level-1/ 。按 GDD 与手绘蓝本搭建的基础移动教学关，支持三鱼切换、跳跃、跌落复位与全员集合判定。详见 [关卡说明](level-1/README.md)。
+- **关卡 1 · 基础移动**：三鱼切换、跳跃、跌落复位与全员集合，详见 [关卡说明](level-1/README.md)。
+- **关卡 2 · 钥匙与重量**：捡钥匙开绿门 → 把箱子推上压板开橙门 → 爬上台阶进入集合房；地编见 [`levels/level-2.json`](levels/level-2.json)，手绘蓝本见 [`design/levels/lv2-blueprint.jpg`](design/levels/lv2-blueprint.jpg)。
+- **机关测试场**：推箱、压板、钥匙门与冲刺破门。
+
+在仓库根目录运行 `python3 -m http.server 8000`，打开 http://localhost:8000/game/?level=level-2 。
 
 ## 代码结构与关卡编辑
 
@@ -42,6 +46,7 @@
 ## 内容
 
 - [`levels/`](levels/)：所有关卡的纯 JSON 地编。
+- [`design/levels/`](design/levels/)：关卡手绘格线蓝本，按关卡登记，作为地编的设计依据。
 - [`game/`](game/)：所有关卡共用的运行代码。
 - [`game/art/`](game/art/)：从设计稿裁出的角色五帧序列、三层视差背景和终点门（由 `scripts/build_art.py` 生成）。
 - [`scripts/build_art.py`](scripts/build_art.py)：把 `assets/` 里的设定图裁成透明背景的游戏素材；需要 Pillow，只在重新生成素材时运行。

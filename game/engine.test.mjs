@@ -49,6 +49,29 @@ test('respawn uses arbitrary level data rather than LV1 coordinates',()=>{
  const l=read('level-1');l.width=1800;l.platforms=[{x:0,y:300,width:1800,height:36}];l.spawns=[{x:100,y:264},{x:200,y:264},{x:300,y:228}];
  const s=createState(l);s.fish[0].y=l.height+40;tick(s,1);assert.equal(s.fish[0].y,264);assert.equal(s.fish[0].x,100);
 });
+test('level 2 needs the key, then the box holds its plate door open',()=>{
+ const s=createState(read('level-2'));
+ const keyDoor=s.doors.find(d=>d.id==='key-door'),plateDoor=s.doors.find(d=>d.id==='plate-door');
+ assert.equal(keyDoor.open,false);assert.equal(plateDoor.open,false);
+ s.fish[0].x=s.keys[0].x;tick(s,1);
+ assert.equal(s.keys[0].collected,true);assert.equal(keyDoor.open,true);
+ const box=s.boxes[0],plate=s.plates[0];
+ box.x=plate.x;tick(s,1);
+ assert.equal(plate.weight,2);assert.equal(plate.on,true);assert.equal(plateDoor.open,true);
+ // Everyone can leave: the box keeps the plate pressed without a fish on it.
+ for(const f of s.fish)f.x=plate.x+plate.width+120;
+ tick(s,1);
+ assert.equal(plate.on,true);assert.equal(plateDoor.open,true);
+});
+test('level 2 room floor is reachable with plain jumps and no dash',()=>{
+ const s=createState(read('level-2')),f=s.fish[0];s.selected=0;
+ f.x=1050;f.y=720-f.height;f.vx=0;f.vy=0;f.grounded=true;
+ for(let jump=0;jump<4&&f.y+f.height>540.5;jump++){
+  step(s,{jump:true},1/120);
+  for(let i=0;i<300;i++){step(s,{axis:1},1/120);if(f.grounded)break;}
+ }
+ assert.ok(f.y+f.height<=540.5,`stopped at ${f.y+f.height}`);
+});
 test('invalid door links are rejected at level load',()=>{
  const l=read('mechanics-test');l.doors[0].plateId='missing';assert.throws(()=>createState(l),/Missing plate/);
 });

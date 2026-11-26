@@ -35,9 +35,12 @@ async function start() {
 const canvas=document.getElementById('game'), ctx=canvas.getContext('2d');
 canvas.width=Math.min(1152,LEVEL.width);canvas.height=Math.min(792,LEVEL.height);
 let state=createState(LEVEL), last=0, accumulator=0, jump=false, resetStart=null;
-// ?select=2 opens the level with fish C already active; handy for reviews.
-const startWith=Number(new URLSearchParams(location.search).get('select'));
+// ?select=2 opens the level with fish C already active; ?cam=450 pans the view;
+// both only exist to make screenshots of a level easy during reviews.
+const params=new URLSearchParams(location.search);
+const startWith=Number(params.get('select'));
 if(Number.isInteger(startWith)&&startWith>=0&&startWith<3)state.selected=startWith;
+const camOffset=Number(params.get('cam'))||0;
 let cameraX=0, cameraY=0;
 const keys=new Set(), touch={left:false,right:false,dash:false};
 const list=document.getElementById('fish-list');
@@ -87,7 +90,7 @@ canvas.addEventListener('pointerdown',e=>{
 function text(s,x,y,size=16,color='#536b70',align='left'){ctx.fillStyle=color;ctx.font=`${size}px system-ui`;ctx.textAlign=align;ctx.fillText(s,x,y);}
 function render(){
   const active=state.fish[state.selected];
-  cameraX=Math.max(0,Math.min(LEVEL.width-canvas.width,active.x+active.width/2-canvas.width*0.42));
+  cameraX=Math.max(0,Math.min(LEVEL.width-canvas.width,camOffset+active.x+active.width/2-canvas.width*0.42));
   cameraY=Math.max(0,Math.min(LEVEL.height-canvas.height,active.y+active.height/2-canvas.height*0.5));
   const sky=ctx.createLinearGradient(0,0,0,canvas.height);
   sky.addColorStop(0,'#d9f4fb');sky.addColorStop(0.55,'#a3def1');sky.addColorStop(1,'#74c3e2');
@@ -110,7 +113,13 @@ function render(){
   }
   for(const p of state.plates){ctx.fillStyle=p.on?'#62a57b':'#e4b24d';ctx.fillRect(p.x,p.y,p.width,p.height);text(`${p.weight} / ${p.threshold}`,p.x,p.y-8,13,'#2d5a6b');}
   for(const b of state.boxes){ctx.fillStyle='#bd9b71';ctx.fillRect(b.x,b.y,b.width,b.height);ctx.strokeStyle='#765c3a';ctx.strokeRect(b.x,b.y,b.width,b.height);text('箱子',b.x,b.y-8,13,'#2d5a6b');}
-  for(const d of state.doors){if(d.open)continue;ctx.fillStyle=d.type==='break'?'#bf7560':'#6c8b93';ctx.fillRect(d.x,d.y,d.width,d.height);text(d.type==='plate'?'压板门':d.type==='key'?'钥匙门':'撞击门',d.x,d.y-12,13,'#2d5a6b');}
+  for(const d of state.doors){
+    if(d.open)continue;
+    ctx.fillStyle=d.type==='key'?'#d9a13b':d.type==='plate'?'#4f9e74':'#c05a4a';
+    ctx.fillRect(d.x,d.y,d.width,d.height);
+    ctx.fillStyle='#00000026';ctx.fillRect(d.x+5,d.y+10,d.width-10,d.height-20);
+    text(d.type==='plate'?'压板门':d.type==='key'?'钥匙门':'撞击门',d.x,d.y-12,13,'#2d5a6b');
+  }
   for(const k of state.keys){if(k.collected)continue;ctx.fillStyle='#e8b92f';ctx.fillRect(k.x,k.y,k.width,k.height);text('钥匙',k.x,k.y-8,13,'#2d5a6b');}
   const g=LEVEL.goal;
   ctx.save();ctx.globalAlpha=0.4;ctx.strokeStyle='#cd6853';ctx.setLineDash([6,5]);ctx.strokeRect(g.x,g.y,g.width,g.height);ctx.restore();
