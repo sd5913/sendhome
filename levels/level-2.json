@@ -14,6 +14,7 @@
     { "x": 36, "y": 576, "width": 972, "height": 72, "label": "地面" },
     { "x": 360, "y": 468, "width": 36, "height": 108, "label": "柱子" },
     { "x": 540, "y": 324, "width": 36, "height": 180, "label": "房间墙" },
+    { "x": 540, "y": 216, "width": 36, "height": 108, "label": "房间墙" },
     { "x": 540, "y": 324, "width": 288, "height": 36, "label": "房间地板" },
     { "x": 540, "y": 180, "width": 288, "height": 36, "label": "房顶" }
   ],

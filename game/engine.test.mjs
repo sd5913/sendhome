@@ -60,6 +60,12 @@ test('level 2 key opens the ground door and the room fish stays locked in',()=>{
  assert.ok(roomFish.x<720,`room fish escaped a closed door at ${roomFish.x}`);
  assert.ok(roomFish.x>=start);
 });
+test('level 2 room fish cannot slip out over the left wall',()=>{
+ const s=createState(read('level-2')),c=s.fish[2];s.selected=2;
+ tick(s,180,{axis:-1});
+ assert.ok(c.x>=576,`room fish left the room over the wall at ${c.x}`);
+ assert.ok(Math.abs(c.y+c.height-324)<1,`room fish fell out of the room: ${c.y+c.height}`);
+});
 test('level 2 plate needs weight 3, so A alone cannot open the room door',()=>{
  const s=createState(read('level-2')),[a,b]=s.fish,plate=s.plates[0],door1=s.doors.find(d=>d.id==='door1');
  a.x=plate.x;a.y=540;tick(s,1);
