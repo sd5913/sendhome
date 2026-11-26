@@ -101,6 +101,16 @@ canvas.addEventListener('pointerdown',e=>{
   e.preventDefault();select(id);canvas.focus({preventScroll:true});
 });
 function text(s,x,y,size=16,color='#536b70',align='left'){ctx.fillStyle=color;ctx.font=`${size}px system-ui`;ctx.textAlign=align;ctx.fillText(s,x,y);}
+// Text prompt with a soft dialog-like plate behind it, so labels stay readable on the art.
+function chip(s,x,y,size=13,color='#23414d',align='left'){
+  ctx.font=`${size}px system-ui`;ctx.textAlign=align;
+  const w=ctx.measureText(s).width,pad=7,left=align==='center'?x-w/2-pad:align==='right'?x-w-pad:x-pad;
+  // Keep a chip inside the visible camera window.
+  const clamped=Math.max(cameraX+4,Math.min(cameraX+canvas.width-4-w-pad*2,left));
+  ctx.fillStyle='#fdfbf3e8';ctx.strokeStyle='#2f4a6f33';ctx.lineWidth=1;
+  ctx.beginPath();ctx.roundRect(clamped,y-size-3,w+pad*2,size+10,7);ctx.fill();ctx.stroke();
+  text(s,clamped+pad,y,size,color,'left');
+}
 function render(){
   const active=state.fish[state.selected];
   cameraX=Math.max(0,Math.min(LEVEL.width-canvas.width,camOffset+active.x+active.width/2-canvas.width*0.42));
@@ -116,7 +126,7 @@ function render(){
     ctx.drawImage(img,(canvas.width-width)/2,(canvas.height-height)/2,width,height);
   }
   ctx.save();ctx.translate(-cameraX,-cameraY);
-  for(const label of LEVEL.labels||[])text(label.text,label.x,label.y,16,'#2d5a6b');
+  for(const label of LEVEL.labels||[])chip(label.text,label.x,label.y,16,'#23414d');
   for(const p of LEVEL.platforms){
     ctx.fillStyle='#4d6f9f';
     if(p.height>60){const rock=ctx.createLinearGradient(0,p.y,0,p.y+p.height);rock.addColorStop(0,'#4d6f9f');rock.addColorStop(1,'#2b4468');ctx.fillStyle=rock;}
@@ -128,22 +138,22 @@ function render(){
     ctx.fillStyle=p.on?'#8fe3b4':MECH.plate;
     ctx.fillRect(p.x,p.y,p.width,p.height);
     ctx.strokeStyle='#123a4a';ctx.lineWidth=2;ctx.strokeRect(p.x+1,p.y+1,p.width-2,p.height-2);
-    text(`${p.weight} / ${p.threshold}`,p.x,p.y-8,13,p.on?'#2f6b4d':'#2d5a6b');
+    chip(`${p.weight} / ${p.threshold}`,p.x,p.y-8,13,p.on?'#2f6b4d':'#2d5a6b');
   }
-  for(const b of state.boxes){ctx.fillStyle='#bd9b71';ctx.fillRect(b.x,b.y,b.width,b.height);ctx.strokeStyle='#765c3a';ctx.strokeRect(b.x,b.y,b.width,b.height);text('箱子',b.x,b.y-8,13,'#2d5a6b');}
+  for(const b of state.boxes){ctx.fillStyle='#bd9b71';ctx.fillRect(b.x,b.y,b.width,b.height);ctx.strokeStyle='#765c3a';ctx.strokeRect(b.x,b.y,b.width,b.height);chip('箱子',b.x,b.y-8,13,'#2d5a6b');}
   for(const d of state.doors){
     if(d.open)continue;
     ctx.fillStyle=MECH[d.type]||MECH.break;
     ctx.fillRect(d.x,d.y,d.width,d.height);
     ctx.fillStyle='#00000026';ctx.fillRect(d.x+5,d.y+10,d.width-10,d.height-20);
-    text(d.type==='plate'?'压板门':d.type==='key'?'钥匙门':'撞击门',d.x,d.y-12,13,'#2d5a6b');
+    chip(d.type==='plate'?'压板门':d.type==='key'?'钥匙门':'撞击门',d.x,d.y-12,13,'#2d5a6b');
   }
-  for(const k of state.keys){if(k.collected)continue;ctx.fillStyle=MECH.key;ctx.fillRect(k.x,k.y,k.width,k.height);text('钥匙',k.x,k.y-8,13,'#2d5a6b');}
+  for(const k of state.keys){if(k.collected)continue;ctx.fillStyle=MECH.key;ctx.fillRect(k.x,k.y,k.width,k.height);chip('钥匙',k.x,k.y-8,13,'#2d5a6b');}
   const g=LEVEL.goal;
   ctx.save();ctx.globalAlpha=0.4;ctx.strokeStyle='#cd6853';ctx.setLineDash([6,5]);ctx.strokeRect(g.x,g.y,g.width,g.height);ctx.restore();
   if(art.door){const dh=g.height*1.1,dw=dh*art.door.width/art.door.height;ctx.drawImage(art.door,g.x+(g.width-dw)/2,g.y+g.height-dh,dw,dh);}
   else{ctx.fillStyle='#db8363';ctx.fillRect(g.x,g.y+g.height-8,g.width,8);}
-  text(`集合点 ${state.fish.filter(f=>f.arrived).length}/3`,g.x+g.width/2,g.y-12,14,'#1f4c5c','center');
+  chip(`集合点 ${state.fish.filter(f=>f.arrived).length}/3`,g.x+g.width/2,g.y-12,14,'#1f4c5c','center');
   for(const f of state.fish){
     if(Math.abs(f.vx)>1)f.facing=f.vx<0?-1:1;
     const action=f.grounded?(Math.abs(f.vx)>1?'run':'idle'):'jump';
@@ -167,10 +177,17 @@ function render(){
     }
     f.drawn=drawn;
     if(f.id===state.selected){ctx.strokeStyle='#ffd75e';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(drawn.left-4,drawn.top-4,drawn.width+8,drawn.height+8,7);ctx.stroke();text('▼',cx,drawn.top-10,14,'#8a6100','center');}
-    text(f.name+(f.arrived?' ✓':''),cx,drawn.top-26,13,'#123a4a','center');
-  }
+    text(f.name+(f.arrived?' ✓':''),cx,drawn.top-26,13,'#123a4a','center');  }
   ctx.restore();
-  if(state.paused||state.completed){ctx.fillStyle='#183c43cc';ctx.fillRect(0,0,canvas.width,canvas.height);text(state.completed?'全员集合，关卡完成':'已暂停',canvas.width/2,canvas.height/2-15,36,'white','center');text(state.completed?`三位伙伴已集合 · 用时 ${state.elapsed.toFixed(1)} 秒`:'按 Esc 或点击继续',canvas.width/2,canvas.height/2+32,20,'white','center');}
+  if(state.paused||state.completed){
+    ctx.fillStyle='#183c43cc';ctx.fillRect(0,0,canvas.width,canvas.height);
+    const panelWidth=Math.min(560,canvas.width-80),panelHeight=170,px=canvas.width/2,py=canvas.height/2;
+    ctx.fillStyle='#fdfbf3';ctx.strokeStyle='#d9c9a3';ctx.lineWidth=3;
+    ctx.beginPath();ctx.roundRect(px-panelWidth/2,py-panelHeight/2,panelWidth,panelHeight,18);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#4f9e74';ctx.beginPath();ctx.roundRect(px-panelWidth/2,py-panelHeight/2,panelWidth,34,[18,18,0,0]);ctx.fill();
+    text(state.completed?'全员集合，关卡完成':'已暂停',px,py-22,30,'#233c42','center');
+    text(state.completed?`三位伙伴已集合 · 用时 ${state.elapsed.toFixed(1)} 秒`:'按 Esc 或点击继续',px,py+26,17,'#4f6158','center');
+  }
   if(doneBox.hidden===state.completed){doneBox.hidden=!state.completed;if(state.completed&&!nextButton.hidden)nextButton.focus({preventScroll:true});}
   document.getElementById('count').textContent=`${state.fish.filter(f=>f.arrived).length} / 3`;
   document.getElementById('time').textContent=`${state.elapsed.toFixed(1)} s`;

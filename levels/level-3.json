@@ -6,19 +6,76 @@
   "width": 1404,
   "height": 792,
   "spawns": [
-    { "x": 162, "y": 324 },
-    { "x": 1245, "y": 684 },
-    { "x": 468, "y": 612 }
+    {
+      "x": 162,
+      "y": 324
+    },
+    {
+      "x": 1245,
+      "y": 684
+    },
+    {
+      "x": 468,
+      "y": 612
+    }
   ],
   "platforms": [
-    { "x": 72, "y": 144, "width": 288, "height": 72, "label": "房顶" },
-    { "x": 72, "y": 144, "width": 72, "height": 252, "label": "房间墙" },
-    { "x": 72, "y": 360, "width": 540, "height": 36, "label": "房间地板" },
-    { "x": 324, "y": 180, "width": 36, "height": 72, "label": "房间墙" },
-    { "x": 576, "y": 396, "width": 36, "height": 216, "label": "柱子" },
-    { "x": 396, "y": 684, "width": 324, "height": 108, "label": "平台" },
-    { "x": 720, "y": 720, "width": 684, "height": 72, "label": "地面" },
-    { "x": 972, "y": 576, "width": 36, "height": 144, "label": "矮墙" }
+    {
+      "x": 72,
+      "y": 144,
+      "width": 288,
+      "height": 72,
+      "label": "房顶"
+    },
+    {
+      "x": 72,
+      "y": 144,
+      "width": 72,
+      "height": 252,
+      "label": "房间墙"
+    },
+    {
+      "x": 72,
+      "y": 360,
+      "width": 540,
+      "height": 36,
+      "label": "房间地板"
+    },
+    {
+      "x": 324,
+      "y": 180,
+      "width": 36,
+      "height": 72,
+      "label": "房间墙"
+    },
+    {
+      "x": 576,
+      "y": 396,
+      "width": 36,
+      "height": 216,
+      "label": "柱子"
+    },
+    {
+      "x": 396,
+      "y": 684,
+      "width": 324,
+      "height": 108,
+      "label": "平台"
+    },
+    {
+      "x": 720,
+      "y": 720,
+      "width": 684,
+      "height": 72,
+      "label": "地面"
+    },
+    {
+      "x": 972,
+      "y": 576,
+      "width": 36,
+      "height": 144,
+      "label": "矮墙"
+    }
   ],
   "goal": {
     "x": 792,
@@ -27,22 +84,53 @@
     "height": 108
   },
   "boxes": [
-    { "id": "box", "x": 1116, "y": 648, "width": 72, "height": 72, "weight": 2, "force": 1.5 }
+    {
+      "id": "box",
+      "x": 1116,
+      "y": 648,
+      "width": 72,
+      "height": 72,
+      "weight": 2,
+      "force": 1.5
+    }
   ],
   "plates": [
-    { "id": "plate", "x": 1008, "y": 705, "width": 72, "height": 15, "surfaceY": 720, "threshold": 2 }
+    {
+      "id": "plate",
+      "x": 1008,
+      "y": 705,
+      "width": 72,
+      "height": 15,
+      "surfaceY": 720,
+      "threshold": 2
+    }
   ],
   "keys": [],
   "doors": [
-    { "id": "break-door", "type": "break", "breakSpeed": 500, "x": 324, "y": 252, "width": 36, "height": 108 },
-    { "id": "door1", "type": "plate", "plateId": "plate", "x": 576, "y": 612, "width": 36, "height": 72 }
+    {
+      "id": "break-door",
+      "type": "break",
+      "breakSpeed": 500,
+      "x": 324,
+      "y": 252,
+      "width": 36,
+      "height": 108
+    },
+    {
+      "id": "door1",
+      "type": "plate",
+      "plateId": "plate",
+      "x": 576,
+      "y": 612,
+      "width": 36,
+      "height": 72
+    }
   ],
   "labels": [
-    { "x": 72, "y": 120, "text": "LV 3" },
-    { "x": 380, "y": 236, "text": "撞门" },
-    { "x": 576, "y": 596, "text": "压板门" },
-    { "x": 792, "y": 596, "text": "集合点" },
-    { "x": 1008, "y": 684, "text": "压板" },
-    { "x": 1116, "y": 628, "text": "箱子" }
+    {
+      "x": 72,
+      "y": 120,
+      "text": "LV 3"
+    }
   ]
 }

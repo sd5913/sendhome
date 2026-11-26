@@ -6,17 +6,62 @@
   "width": 1044,
   "height": 792,
   "spawns": [
-    { "x": 198, "y": 540 },
-    { "x": 288, "y": 540 },
-    { "x": 648, "y": 252 }
+    {
+      "x": 198,
+      "y": 540
+    },
+    {
+      "x": 288,
+      "y": 540
+    },
+    {
+      "x": 648,
+      "y": 252
+    }
   ],
   "platforms": [
-    { "x": 36, "y": 576, "width": 972, "height": 72, "label": "地面" },
-    { "x": 360, "y": 468, "width": 36, "height": 108, "label": "柱子" },
-    { "x": 540, "y": 324, "width": 36, "height": 180, "label": "房间墙" },
-    { "x": 540, "y": 216, "width": 36, "height": 108, "label": "房间墙" },
-    { "x": 540, "y": 324, "width": 288, "height": 36, "label": "房间地板" },
-    { "x": 540, "y": 180, "width": 288, "height": 36, "label": "房顶" }
+    {
+      "x": 36,
+      "y": 576,
+      "width": 972,
+      "height": 72,
+      "label": "地面"
+    },
+    {
+      "x": 360,
+      "y": 468,
+      "width": 36,
+      "height": 108,
+      "label": "柱子"
+    },
+    {
+      "x": 540,
+      "y": 324,
+      "width": 36,
+      "height": 180,
+      "label": "房间墙"
+    },
+    {
+      "x": 540,
+      "y": 216,
+      "width": 36,
+      "height": 108,
+      "label": "房间墙"
+    },
+    {
+      "x": 540,
+      "y": 324,
+      "width": 288,
+      "height": 36,
+      "label": "房间地板"
+    },
+    {
+      "x": 540,
+      "y": 180,
+      "width": 288,
+      "height": 36,
+      "label": "房顶"
+    }
   ],
   "goal": {
     "x": 900,
@@ -26,20 +71,55 @@
   },
   "boxes": [],
   "plates": [
-    { "id": "plate", "x": 720, "y": 561, "width": 72, "height": 15, "surfaceY": 576, "threshold": 3 }
+    {
+      "id": "plate",
+      "x": 720,
+      "y": 561,
+      "width": 72,
+      "height": 15,
+      "surfaceY": 576,
+      "threshold": 3
+    }
   ],
   "keys": [
-    { "id": "key", "x": 432, "y": 542, "width": 24, "height": 34 }
+    {
+      "id": "key",
+      "x": 432,
+      "y": 542,
+      "width": 24,
+      "height": 34
+    }
   ],
   "doors": [
-    { "id": "door2", "type": "key", "keyId": "key", "x": 540, "y": 504, "width": 34, "height": 72 },
-    { "id": "door1", "type": "plate", "plateId": "plate", "x": 756, "y": 216, "width": 34, "height": 108 }
+    {
+      "id": "door2",
+      "type": "key",
+      "keyId": "key",
+      "x": 540,
+      "y": 504,
+      "width": 34,
+      "height": 72
+    },
+    {
+      "id": "door1",
+      "type": "plate",
+      "plateId": "plate",
+      "x": 756,
+      "y": 216,
+      "width": 34,
+      "height": 108
+    }
   ],
   "labels": [
-    { "x": 36, "y": 120, "text": "LV 2" },
-    { "x": 600, "y": 156, "text": "房间" },
-    { "x": 432, "y": 516, "text": "钥匙" },
-    { "x": 700, "y": 540, "text": "压板" },
-    { "x": 900, "y": 450, "text": "集合点" }
+    {
+      "x": 36,
+      "y": 120,
+      "text": "LV 2"
+    },
+    {
+      "x": 600,
+      "y": 156,
+      "text": "房间"
+    }
   ]
 }
