@@ -177,7 +177,8 @@ function render(){
     }
     f.drawn=drawn;
     if(f.id===state.selected){ctx.strokeStyle='#ffd75e';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(drawn.left-4,drawn.top-4,drawn.width+8,drawn.height+8,7);ctx.stroke();text('▼',cx,drawn.top-10,14,'#8a6100','center');}
-    text(f.name+(f.arrived?' ✓':''),cx,drawn.top-26,13,'#123a4a','center');  }
+    if(f.arrived)text('✓',cx,drawn.top-14,15,'#2f6b4d','center');
+  }
   ctx.restore();
   if(state.paused||state.completed){
     ctx.fillStyle='#183c43cc';ctx.fillRect(0,0,canvas.width,canvas.height);
