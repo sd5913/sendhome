@@ -6,7 +6,7 @@
 
 *A 2D co-op puzzle platformer about three fish with different weights, sizes and speeds who have to meet at the checkpoint. Development and collaboration happen on `main` in this repository.*
 
-![关卡 3 · 撞门与分工](docs/screenshots/level-3-room.png)
+![关卡 4 · 逆流渡桥](docs/screenshots/level-4.png)
 
 ## 中文
 
@@ -15,20 +15,6 @@
 - **在线**：<https://sd5913.github.io/sendhome/>（GitHub Pages）
 - **本地**：在仓库根目录运行 `python3 -m http.server 8000`，打开 <http://localhost:8000/game/?level=level-3>；页面右上角可切换关卡。
 - **通关后**：画面底部会出现「下一关」按钮，直接进入下一关；最后一关会提示重新选择。
-
-### 截图
-
-| 关卡 1 · 基础移动 | 关卡 2 · 钥匙与重量 |
-| --- | --- |
-| ![](docs/screenshots/level-1.png) | ![](docs/screenshots/level-2.png) |
-
-| 关卡 3 · 石屋与撞门 | 关卡 3 · 压板、箱子与矮墙 |
-| --- | --- |
-| ![](docs/screenshots/level-3-room.png) | ![](docs/screenshots/level-3-mechanisms.png) |
-
-![关卡 4 · 逆流渡桥](docs/screenshots/level-4.png)
-
-![机关测试场](docs/screenshots/mechanics-test.png)
 
 ### 关卡
 
